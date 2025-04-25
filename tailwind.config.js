@@ -9,7 +9,7 @@ module.exports = {
         one: "#3d3d3d",
         two: "#171414",
         three: "#ff9a68"
-      }
+      },
     },
   },
   plugins: [],
