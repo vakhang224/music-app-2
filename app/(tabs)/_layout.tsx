@@ -3,6 +3,10 @@ import React from 'react'
 import { Tabs } from 'expo-router'
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet } from 'react-native';
+import Entypo from '@expo/vector-icons/Entypo';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 
 const _layout = () => {
@@ -27,11 +31,16 @@ const _layout = () => {
                 },
                 tabBarIcon: ({ focused }) => (
                     <View className="flex w-full h-full items-center justify-center flex-1 ">
-                    <Image
+                    <Entypo name="home" 
+                            size={20} 
+                            color={focused ? 'white' : 'gray'}
+                            className="w-6 h-6 mb-1 mt-7" //  w-6 h-6 is close to 24x24,  mb-1 for margin
+                    />
+                    {/* <Image
                     source={require('..\\assets\\icons\\home.png')}
                     tintColor={focused ? 'white' : 'gray'}
                     className="w-6 h-6 mb-1 mt-7" //  w-6 h-6 is close to 24x24,  mb-1 for margin
-                    />
+                    /> */}
                     <Text className={`text-sm w-20 ${focused ? 'text-white' : 'text-gray-400'} text-center`}>
                         Home
                     </Text>
@@ -64,11 +73,15 @@ const _layout = () => {
                 },
                 tabBarIcon: ({ focused }) => (
                     <View className="flex w-full h-full items-center justify-center flex-1 ">
-                    <Image
+                    <MaterialIcons  name="library-music" 
+                                    size={20} 
+                                    color={focused ? 'white' : 'gray'}
+                                    className="w-6 h-6 mb-1 mt-7" />
+                    {/* <Image
                     source={require('..\\assets\\icons\\library.png')}
                     tintColor={focused ? 'white' : 'gray'}
                     className="w-6 h-6 mb-1 mt-7" //  w-6 h-6 is close to 24x24,  mb-1 for margin
-                    />
+                    /> */}
                     <Text className={`text-sm w-20 ${focused ? 'text-white' : 'text-gray-400'} text-center`}>
                         Library
                     </Text>
@@ -101,11 +114,15 @@ const _layout = () => {
                 },
                 tabBarIcon: ({ focused }) => (
                     <View className="flex w-full h-full items-center justify-center flex-1 ">
-                    <Image
+                    <FontAwesome5   name="search" 
+                                    size={18} 
+                                    color={focused ? 'white' : 'gray'}
+                                    className="w-6 h-6 mb-1 mt-7" />
+                    {/* <Image
                     source={require('..\\assets\\icons\\search.png')}
                     tintColor={focused ? 'white' : 'gray'}
                     className="w-6 h-6 mb-1 mt-7" //  w-6 h-6 is close to 24x24,  mb-1 for margin
-                    />
+                    /> */}
                     <Text className={`text-sm w-20 ${focused ? 'text-white' : 'text-gray-400'} text-center`}>
                         Search
                     </Text>
@@ -138,11 +155,16 @@ const _layout = () => {
                 },
                 tabBarIcon: ({ focused }) => (
                     <View className="flex w-full h-full items-center justify-center flex-1 ">
-                    <Image
+                    <AntDesign  name="setting" 
+                                size={20} 
+                                color={focused ? 'white' : 'gray'} 
+                                className="w-6 h-6 mb-1 mt-7"
+                                />
+                    {/* <Image
                     source={require('..\\assets\\icons\\options.png')}
                     tintColor={focused ? 'white' : 'gray'}
                     className="w-6 h-6 mb-1 mt-7" //  w-6 h-6 is close to 24x24,  mb-1 for margin
-                    />
+                    /> */}
                     <Text className={`text-sm w-20 ${focused ? 'text-white' : 'text-gray-400'} text-center`}>
                         Setting
                     </Text>

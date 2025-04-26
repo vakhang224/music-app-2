@@ -1,5 +1,7 @@
 import { Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export default function Index() {
   return (
@@ -13,19 +15,21 @@ export default function Index() {
       <View className="flex-1">
         <Image  className="absolute w-full z-0 h-full bg-gray-900" />
 
-        <View className="flex flex-row justify-between items-center h-16 bg-red-500">
+        <View className="flex flex-row justify-between items-center h-16 ">
 
-          <View className="bg-blue-500 ml-5"> 
-            <Text className="text-white text-3xl"> Trang Chu </Text>
+          <View className=" ml-5"> 
+            <Text className=" text-3xl text-white"> Trang chủ </Text>
           </View>
 
-          <View className=" flex flex-row w-24 bg-purple-400 items-center justify-center">
-            <TouchableOpacity className=" bg-gray-500 mr-6">
-              <Image style={{ tintColor: 'white' }} className="w-6 h-6" source={require("@/assets/icons/notification.png")}/>
+          <View className=" flex flex-row w-24  items-center justify-center">
+            <TouchableOpacity className="  mr-6">
+              <Ionicons name="notifications" size={22} color="white" className="w-6 h-6 mr-3" />
+            
             </TouchableOpacity>
 
-            <TouchableOpacity className=" bg-gray-500 mr-6">
-              <Image style={{ tintColor: 'white' }} className="w-6 h-6" source={require("@/assets/icons/history.png")}/>
+            <TouchableOpacity className="  mr-6">
+              <FontAwesome5 name="history" size={20} color="white" className="w-6 h-6 mr-3" />
+            
             </TouchableOpacity>
           </View>
         </View>
