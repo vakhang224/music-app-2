@@ -22,12 +22,12 @@ export default function Index() {
           </View>
 
           <View className=" flex flex-row w-24  items-center justify-center">
-            <TouchableOpacity className="  mr-6">
+            <TouchableOpacity className="mr-6">
               <Ionicons name="notifications" size={22} color="white" className="w-6 h-6 mr-3" />
             
             </TouchableOpacity>
 
-            <TouchableOpacity className="  mr-6">
+            <TouchableOpacity className="mr-6">
               <FontAwesome5 name="history" size={20} color="white" className="w-6 h-6 mr-3" />
             
             </TouchableOpacity>
