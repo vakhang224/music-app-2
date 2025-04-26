@@ -6,22 +6,16 @@ import { getAlbum } from '@/model/getAlbum';
 import { useEffect, useState } from "react";
 
 export default function Index() {
-
   const [data, setData] = useState([]);  // Tạo state để lưu dữ liệu
 
   useEffect(() => {
     async function fetchData() {
-      const Data = await getAlbum("tlinh");
-
+      const Data = await getAlbum("Sơn Tùng");
       // Kiểm tra dữ liệu từ API
       console.log("Dữ liệu từ getAlbum:", Data);
 
       // Kiểm tra dữ liệu có hợp lệ không
-      if (Data) {
-        setData(Data);  
-      } else {
-        console.log("Không có dữ liệu hoặc dữ liệu không hợp lệ");
-      }
+      setData(Data.albums.items)
     }
 
     fetchData();  // Gọi hàm fetchData
@@ -34,7 +28,6 @@ export default function Index() {
       <View className="flex flex-row justify-between items-center h-16">
         <View className="ml-5">
           <Text className="text-3xl text-white">Trang chủ</Text>
-
         </View>
 
         <View className="flex flex-row w-24 items-center justify-center">
@@ -51,19 +44,19 @@ export default function Index() {
       <ScrollView className="w-full h-screen">
         <View className="flex flex-col justify-center items-center">
           {data.length > 0 ? (
-            data.map((album, index) => (
+            data.map((item, index) => (
               <View key={index} className="mb-4 flex items-center">
                 {/* Tên album */}
-                <Text className="text-white text-lg">{album.albums.name}</Text>
+                <Text className="text-white text-lg">{item.name}</Text>
 
                 {/* Hình ảnh album */}
                 <Image
-                  source={{ uri: album.albums.images[0]?.url }}
+                  source={{ uri: item.images[0]?.url }}
                   style={{ width: 200, height: 200, borderRadius: 10 }}
                 />
 
                 {/* Thêm các thông tin khác về album nếu cần */}
-                <Text className="text-white text-sm mt-2">{album.artists[0]?.name}</Text>
+                <Text className="text-white text-sm mt-2">{item.artists[0]?.name}</Text>
               </View>
             ))
           ) : (
@@ -72,6 +65,5 @@ export default function Index() {
         </View>
       </ScrollView>
     </View>
-
   );
 }

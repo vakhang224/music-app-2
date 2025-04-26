@@ -1,7 +1,10 @@
+
 export async function getAlbum(query) {
     try {
-      const response = await fetch(`http://192.168.170.1:3000/spotify/search?q=${encodeURIComponent(query)}`);
-      
+      const response = await fetch(`http://localhost:3000/spotify/search?q=${encodeURIComponent(query)}`);
+      // const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}`)
+
+      console.log("Nó đây nè", response.status)
       if (!response.ok) {
         throw new Error("Lỗi khi gọi API");
       }
@@ -14,6 +17,3 @@ export async function getAlbum(query) {
       return null;
     }
   }
-
-
-  getAlbum("tayler")
