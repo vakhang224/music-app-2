@@ -10,7 +10,7 @@ export default function Index() {
 
   useEffect(() => {
     async function fetchData() {
-      const Data = await getAlbum("Sơn Tùng");
+      const Data = await getAlbum("MCK");
       // Kiểm tra dữ liệu từ API
       console.log("Dữ liệu từ getAlbum:", Data);
 
@@ -41,28 +41,34 @@ export default function Index() {
         </View>
       </View>
 
-      <ScrollView className="w-full h-screen">
-        <View className="flex flex-col justify-center items-center">
+      <ScrollView className="w-full">
+      <Text className="text-white ml-5 text-lg">Album của {data[0].artists[0]?.name}</Text>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
+         className="flex flex-row w-full p-3 overflow-x-auto">
           {data.length > 0 ? (
             data.map((item, index) => (
-              <View key={index} className="mb-4 flex items-center">
-                {/* Tên album */}
-                <Text className="text-white text-lg">{item.name}</Text>
+              
+              <View key={index} className="mr-5">
+              
 
                 {/* Hình ảnh album */}
                 <Image
                   source={{ uri: item.images[0]?.url }}
-                  style={{ width: 200, height: 200, borderRadius: 10 }}
+                  style={{ width: 150, height: 150, borderRadius: 10 }}
                 />
+
+                <Text className="text-white text-sm w-[150px] mt-3" numberOfLines={3}>{item.name}</Text>
 
                 {/* Thêm các thông tin khác về album nếu cần */}
                 <Text className="text-white text-sm mt-2">{item.artists[0]?.name}</Text>
+
+            
               </View>
             ))
           ) : (
             <Text className="text-white">Không có album nào</Text>
           )}
-        </View>
+        </ScrollView>
       </ScrollView>
     </View>
   );
