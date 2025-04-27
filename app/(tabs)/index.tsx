@@ -6,6 +6,7 @@ import { getQuery } from '@/model/getQuery';
 import { useEffect, useState } from "react";
 
 export default function Index() {
+
   const [data, setData] = useState([]);  // Tạo state để lưu dữ liệu
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function Index() {
       <View className="flex flex-row justify-between items-center h-16">
         <View className="ml-5">
           <Text className="text-3xl text-white">Trang chủ</Text>
+
         </View>
 
         <View className="flex flex-row w-24 items-center justify-center">
@@ -66,5 +68,6 @@ export default function Index() {
         </View>
       </ScrollView>
     </View>
+
   );
 }
