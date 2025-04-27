@@ -6,13 +6,12 @@ import { getQuery } from '@/model/getQuery';
 import { useEffect, useState } from "react";
 
 export default function Index() {
-
   const [data, setData] = useState([]);  // Tạo state để lưu dữ liệu
 
   useEffect(() => {
     async function fetchData() {
-      const Data = await getQuery("Son TUng");
 
+      const Data = await getAlbum("Sơn Tùng");
       // Kiểm tra dữ liệu từ API
       console.log("Dữ liệu từ getAlbum:", Data);
 
@@ -30,7 +29,6 @@ export default function Index() {
       <View className="flex flex-row justify-between items-center h-16">
         <View className="ml-5">
           <Text className="text-3xl text-white">Trang chủ</Text>
-
         </View>
 
         <View className="flex flex-row w-24 items-center justify-center">
@@ -68,6 +66,5 @@ export default function Index() {
         </View>
       </ScrollView>
     </View>
-
   );
 }
