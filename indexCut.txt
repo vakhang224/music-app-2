@@ -1,0 +1,47 @@
+const [data, setData] = useState([]);  // Tạo state để lưu dữ liệu
+
+useEffect(() => {
+  async function fetchData() {
+    const Data = await getQuery("MCK");
+    // Kiểm tra dữ liệu từ API
+    console.log("Dữ liệu từ getAlbum:", Data);
+
+    // Kiểm tra dữ liệu có hợp lệ không
+    setData(Data.albums.items)
+  }
+
+  fetchData();  // Gọi hàm fetchData
+}, []);
+      
+      
+      
+      
+      <ScrollView className="w-full">
+      {/* <Text className="text-white ml-5 text-lg">Album của {data[0].artists.name}</Text> */}
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
+         className="flex flex-row w-full p-3 overflow-x-auto">
+          {data.length > 0 ? (
+            data.map((item, index) => (
+              
+              <View key={index} className="mr-5">
+              
+
+                {/* Hình ảnh album */}
+                <Image
+                  source={{ uri: item.images[0]?.url }}
+                  style={{ width: 150, height: 150, borderRadius: 10 }}
+                />
+
+                <Text className="text-white text-sm w-[150px] mt-3" numberOfLines={3}>{item.name}</Text>
+
+                {/* Thêm các thông tin khác về album nếu cần */}
+                <Text className="text-white text-sm mt-2">{item.artists[0]?.name}</Text>
+
+            
+              </View>
+            ))
+          ) : (
+            <Text className="text-white">Không có album nào</Text>
+          )}
+        </ScrollView>
+      </ScrollView>

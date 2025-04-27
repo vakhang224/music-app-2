@@ -1,4 +1,0 @@
-const fd = async (q)=>{
-
-
-}
