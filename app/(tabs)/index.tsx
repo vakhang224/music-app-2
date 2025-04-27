@@ -2,7 +2,7 @@ import { Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-n
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { getAlbum } from '@/model/getAlbum';
+import { getQuery } from '@/model/getQuery';
 import { useEffect, useState } from "react";
 
 export default function Index() {
@@ -10,17 +10,13 @@ export default function Index() {
 
   useEffect(() => {
     async function fetchData() {
-      const Data = await getAlbum("tlinh");
+      const Data = await getQuery("Son TUng");
 
       // Kiểm tra dữ liệu từ API
       console.log("Dữ liệu từ getAlbum:", Data);
 
       // Kiểm tra dữ liệu có hợp lệ không
-      if (Data) {
-        setData(Data);  
-      } else {
-        console.log("Không có dữ liệu hoặc dữ liệu không hợp lệ");
-      }
+      setData(Data.albums.items)
     }
 
     fetchData();  // Gọi hàm fetchData
@@ -49,19 +45,19 @@ export default function Index() {
       <ScrollView className="w-full h-screen">
         <View className="flex flex-col justify-center items-center">
           {data.length > 0 ? (
-            data.map((album, index) => (
+            data.map((item, index) => (
               <View key={index} className="mb-4 flex items-center">
                 {/* Tên album */}
-                <Text className="text-white text-lg">{album.albums.name}</Text>
+                <Text className="text-white text-lg">{item.name}</Text>
 
                 {/* Hình ảnh album */}
                 <Image
-                  source={{ uri: album.albums.images[0]?.url }}
+                  source={{ uri: item.images[0]?.url }}
                   style={{ width: 200, height: 200, borderRadius: 10 }}
                 />
 
                 {/* Thêm các thông tin khác về album nếu cần */}
-                <Text className="text-white text-sm mt-2">{album.artists[0]?.name}</Text>
+                <Text className="text-white text-sm mt-2">{item.artists[0]?.name}</Text>
               </View>
             ))
           ) : (

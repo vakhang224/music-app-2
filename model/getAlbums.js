@@ -1,6 +1,6 @@
-export async function getAlbum(query) {
+export async function getAlbums(query) {
     try {
-      const response = await fetch(`http://192.168.1.11:3000/spotify/Albums?id=${encodeURIComponent(query)}`);
+      const response = await fetch(`http://192.168.1.11:3000/spotify/Albums?ids=${encodeURIComponent(query)}`);
       
       if (!response.ok) {
         throw new Error("Lỗi khi gọi API");
@@ -16,3 +16,6 @@ export async function getAlbum(query) {
   }
 
 
+export async function getNewRelease(){
+    
+}
