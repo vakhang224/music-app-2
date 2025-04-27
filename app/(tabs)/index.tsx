@@ -2,7 +2,7 @@ import { Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-n
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { getAlbum } from '@/model/getAlbum';
+import { getQuery } from '@/model/getQuery';
 import { useEffect, useState } from "react";
 
 export default function Index() {
@@ -10,6 +10,7 @@ export default function Index() {
 
   useEffect(() => {
     async function fetchData() {
+
       const Data = await getAlbum("Sơn Tùng");
       // Kiểm tra dữ liệu từ API
       console.log("Dữ liệu từ getAlbum:", Data);
