@@ -7,6 +7,7 @@ const ArtistsCard = ({id, images, name, type}: Artists) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
+    //@ts-ignore
     <Link href={`/song/${id}`} asChild>
       <TouchableOpacity onPressIn={() => setIsHovered(true)} onPressOut={() => setIsHovered(false)}
       className={`w-[45%] flex flex-row ${isHovered ? 'bg-gray-500' : 'bg-black'} rounded-lg h-14`}>
