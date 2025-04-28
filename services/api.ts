@@ -1,9 +1,12 @@
-const API_BASE_URL = 'http://127.0.0.1:8888'; // Replace with actual backend URL
 
+const API_BASE_URL = "http://192.168.1.70:8888"
+
+// Rest of your code remains the same
 interface TokenResponse {
   accessToken?: string;
   error?: string;
 }
+
 
 export const getAccessToken = async (): Promise<string | null> => {
   try {
@@ -45,32 +48,36 @@ export const getSpotifyConfig = async () => {
   };
 };
 
-export const fetchArtist = async ({ query }: { query: string }) => {
-  const config = await getSpotifyConfig(); // Await to get the config with accessToken
-  if (!config) {
-    console.error('Failed to get Spotify config');
-    return;
-  }
-
-  const { BASE_URL, headers } = config;
-
-  // Construct the full endpoint URL (adjust endpoint as needed)
-  const endpoint = `${BASE_URL}/artists/${query}`;
-
-  try {
-    const response = await fetch(endpoint, {
-      method: 'GET',
-      headers: headers, // Use the headers from the config
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch artists');
+export const fetchArtists = async ({ query }: { query: string }) => {
+    const config = await getSpotifyConfig(); // Await to get the config with accessToken
+    if (!config) {
+      console.error('Failed to get Spotify config');
+      return;
     }
-
-    const data = await response.json();
-    return data; // Return the artist data or handle it as necessary
-  } catch (error) {
-    console.error('Error fetching artist:', error);
-    return null;
-  }
-};
+  
+    const { BASE_URL, headers } = config;
+  
+    // Construct the full endpoint URL (adjust endpoint as needed)
+    const endpoint = `${BASE_URL}/artists?ids=${encodeURIComponent(query)}`;
+    console.log(`Fetching data from endpoint: ${endpoint}`); // Log the endpoint to make sure it's correct
+    try {
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: headers, // Use the headers from the config
+      });
+  
+      if (!response.ok) {
+        console.error(`Failed to fetch artist. Status: ${response.status} - ${response.statusText}`);
+        throw new Error(`Failed to fetch artists with status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log('Fetched artist data:', data); // Log the fetched data for debugging
+      return data; // Return the artist data or handle it as necessary
+    } catch (error) {
+      console.error('Error fetching artist:', error);
+      return null;
+    }
+    
+  };
+  

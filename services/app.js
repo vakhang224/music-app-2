@@ -1,21 +1,24 @@
 var express = require('express');
 var request = require('request');
 var querystring = require('querystring');
-var cors = require('cors');  // Add this line
+var cors = require('cors');
 
-var client_id = 'b42cc2747e39432084ae1aee8268d3e9'; // Your client id
-var client_secret = '65236f599c06485185deb28fe3c58c2c'; // Your secret
-var redirect_uri = 'http://127.0.0.1:8888/callback'; // Your redirect uri
+var client_id = 'b42cc2747e39432084ae1aee8268d3e9';
+var client_secret = '65236f599c06485185deb28fe3c58c2c';
+var redirect_uri = 'http://127.0.0.1:8888/callback';
 
 var app = express();
 
-// Enable CORS for all routes
-app.use(cors());  // Add this line
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 
-// Variables to store the tokens
 var access_token = null;
 var refresh_token = null;
 var access_token_expiry_time = null;
+
 
 function generateRandomString(length) {
   var text = '';
@@ -72,18 +75,14 @@ app.get('/callback', function (req, res) {
       if (response.statusCode === 200) {
         access_token = body.access_token;
         refresh_token = body.refresh_token;
+        access_token_expiry_time = Date.now() + (3600 * 1000);
 
-        // Calculate expiration time of access token (1 hour)
-        access_token_expiry_time = Date.now() + (3600 * 1000); // 1 hour from now
-
-        // Send tokens back as JSON
         res.send({
           access_token: access_token,
           refresh_token: refresh_token
         });
 
-        // Automatically refresh access token every hour
-        setInterval(refreshAccessTokenIfNeeded, 3600 * 1000); // Check and refresh every hour
+        setInterval(refreshAccessTokenIfNeeded, 3600 * 1000);
       } else {
         res.send({ error: 'invalid_token' });
       }
@@ -91,19 +90,16 @@ app.get('/callback', function (req, res) {
   });
 });
 
-// Check if the access token has expired
 function isAccessTokenExpired() {
   return Date.now() > access_token_expiry_time;
 }
 
-// Refresh the access token if needed
 function refreshAccessTokenIfNeeded() {
   if (isAccessTokenExpired()) {
     refreshAccessToken();
   }
 }
 
-// Refresh the access token using the refresh token
 function refreshAccessToken() {
   if (!refresh_token) {
     console.log("No refresh token available.");
@@ -129,8 +125,8 @@ function refreshAccessToken() {
     } else {
       if (response.statusCode === 200) {
         access_token = body.access_token;
-        refresh_token = body.refresh_token || refresh_token; // Update refresh token if new one is provided
-        access_token_expiry_time = Date.now() + (3600 * 1000); // Update expiration time
+        refresh_token = body.refresh_token || refresh_token;
+        access_token_expiry_time = Date.now() + (3600 * 1000);
         console.log('Access token refreshed');
       } else {
         console.log('Error refreshing token:', response.statusCode, body);
@@ -139,7 +135,6 @@ function refreshAccessToken() {
   });
 }
 
-// Endpoint to fetch the current access token
 app.get('/api/token', function (req, res) {
   if (access_token) {
     res.json({ accessToken: access_token });
@@ -148,7 +143,8 @@ app.get('/api/token', function (req, res) {
   }
 });
 
-// Start the server
-app.listen(8888, function () {
-  console.log('Server listening at http://localhost:8888/login');
+app.listen(8888, '0.0.0.0', function () {
+  console.log('Server listening on all interfaces at port 8888');
+  console.log('- Local access: http://localhost:8888/login');
+  console.log('- For testing on other devices, use your network IP with port 8888');
 });

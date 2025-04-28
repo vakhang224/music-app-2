@@ -1,20 +1,26 @@
-import { View, Text, Image } from 'react-native'
-import React from 'react'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
 import "@/app/global.css";
+import { Link } from 'expo-router';
 
-const ArtistsCard = () => {
+const ArtistsCard = ({id, images, name, type}: Artists) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <View style={{width: "45%",height: "25%", marginLeft: 10, borderColor: "white", borderWidth: 1, borderRadius: 5}}>
-        <Image  source={require("@/assets/dataImage/sontung.jpg")}
-                style={{
-                    maxWidth:"30%",
-                    height: "100%",
-                    borderRadius: 5
-                }}
-                />
-        <Text className="text-white">Sơn Tùng M-TP</Text>
-    </View>
+    <Link href={`/song/${id}`} asChild>
+      <TouchableOpacity onPressIn={() => setIsHovered(true)} onPressOut={() => setIsHovered(false)}
+      className={`w-[45%] flex flex-row ${isHovered ? 'bg-gray-500' : 'bg-black'} rounded-lg h-14`}>
+        <Image source={{
+          uri: images 
+            ? `${images[0]?.url}` 
+            : 'https://placeholder.co/600x400/1a1a1a/ffffff.png'
+        }}
+          className='w-[30%]  rounded-lg'
+          resizeMode='cover'
+        />
+        <Text className='text-white self-center ml-3'>{name}</Text>
+      </TouchableOpacity>
+    </Link>
   )
 }
-
-export default ArtistsCard
+export default ArtistsCard;

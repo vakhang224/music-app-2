@@ -180,6 +180,12 @@ const _layout = () => {
                 ),
             }}
         />
+        <Tabs.Screen
+            name="song/[id]"
+            options={{
+                href:null
+            }}
+        />
     </Tabs>
   )
 }
