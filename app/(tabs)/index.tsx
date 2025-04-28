@@ -2,12 +2,19 @@ import { Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-n
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { getQuery } from '@/model/getQuery';
 import { useEffect, useState } from "react";
 import ArtistsCard from "@/components/ArtistsCard";
+import { fetchArtist } from "@/services/api";
+import useFetch from "@/services/useFetch";
 
 export default function Index() {
 
+  const { data: artists, 
+          loading: artistsLoading, 
+          error: artistsError 
+        } = useFetch(() => fetchArtist({
+    query: ''
+  }))
 
   return (
     <View className="flex flex-col flex-1 bg-blue-400">
@@ -34,7 +41,7 @@ export default function Index() {
       </View>
 
       <View>
-        <ArtistsCard/>
+        
       </View>
 
     </View>
