@@ -143,7 +143,7 @@ export default function Index() {
           <Text>{error?.message}</Text>
         ) : (
           <>
-            {artistalbum?.map((albumGroup, index) => {
+            {artistalbum?.map((artistalbum, index) => {
               const artist = data?.artists.find(
                 (a: { id: string }) => a.id === artistIds[index]
               );
@@ -158,7 +158,7 @@ export default function Index() {
                     <FlatList
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      data={albumGroup?.items}
+                      data={artistalbum?.items}
                       renderItem={({ item }) => <ArtistsAlbum {...item} />}
                       keyExtractor={(item) => item.id.toString()}
                     />
