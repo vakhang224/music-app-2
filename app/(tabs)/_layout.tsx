@@ -186,6 +186,12 @@ const _layout = () => {
                 href:null
             }}
         />
+        <Tabs.Screen
+            name="album/[id]"
+            options={{
+                href:null
+            }}
+        />
     </Tabs>
   )
 }

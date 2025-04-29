@@ -1,10 +1,12 @@
 import { ActivityIndicator, Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { fetchArtists } from "@/services/api";
+import { fetchArtists, fetchArtistsAlbum, fetchReleaseAlbum } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import { FlatList } from "react-native";
 import ArtistsCard from "@/components/ArtistsCard";
+import AlbumCard from "@/components/AlbumCard";
+import PopularPlaylists from "@/components/PopularPlaylists";
 
 export default function Index() {
 
@@ -15,8 +17,18 @@ export default function Index() {
     query: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6,5dfZ5uSmzR7VQK0udbAVpf,6mEQK9m2krja6X1cfsAjfl,1n9JKdEdLxrbgJiqz1WZFJ'
   }))
 
-  console.log('loading:', loading);
-  console.log('error:', error);
+  const { data: album,
+          loading: albumLoading,
+          error: albumError
+        } = useFetch(() => fetchReleaseAlbum())
+
+  const { data: artistalbum,
+          loading: artistalbumLoading,
+          error: artistalbumError
+        } = useFetch(() => fetchArtistsAlbum({
+          query: '0TnOYISbd1XYRBk9myaseg'
+        }))
+
   return (
     <View className="flex flex-col flex-1 bg-gray-900">
       {/* You have an Image component without a source. It's currently rendering a full-screen gray background. 
@@ -48,7 +60,7 @@ export default function Index() {
       </View>
 
       {/* Suggested Artists Section */}
-      <View className="flex-1">
+      <View className="flex-1 max-h-[28%]">
         <Text className="text-xl color-white ml-5 mt-5">Tác giả đề xuất</Text>
 
         {/* Loading State */}
@@ -87,7 +99,57 @@ export default function Index() {
         )}
       </View>
 
-      <View>
+      <View className="flex-1 max-h-[28%]">
+      <Text className="text-xl color-white ml-5 mt-5">Album mới ra mắt</Text>
+        {albumLoading ? (
+          <ActivityIndicator
+            size="large"
+            color="white"
+            className="mt-10 self-center"
+          />
+        ) : albumError ? (
+          <Text>Error: {error?.message}</Text>
+        ) : (
+          <View className="flex-1 mt-5">
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={album?.albums.items}
+              renderItem={({ item }) => (
+                <AlbumCard
+                  {...item}
+                />
+              )}
+              keyExtractor={(item) => item.id.toString()}
+            />
+          </View>
+        )}
+      </View>
+
+      <View className="flex-1 max-h-[30%]">
+        {playlistLoading ? (
+          <ActivityIndicator
+          size="large"
+          color="white"
+          className="mt-10 self-center"
+        />
+        ) : playlistError ? (
+          <Text>{error?.message}</Text>
+        ) : (
+          <View className="flex-1 mt-5">
+            <>
+            <Text className="text-xl color-white ml-5 mt-5">Album của {data.artists}</Text>
+            <FlatList
+              data={playlist?.playlists.items}
+              renderItem={({ item }) => (
+                <PopularPlaylists
+                  {...item}
+                />
+              )}
+            />
+            </>
+          </View>
+        )}
       </View>
     </View>
   );

@@ -1,5 +1,5 @@
 
-const API_BASE_URL = "http://192.168.1.70:8888"
+const API_BASE_URL = "http://192.168.138.244:8888"
 
 // Rest of your code remains the same
 interface TokenResponse {
@@ -67,7 +67,6 @@ export const fetchArtists = async ({ query }: { query: string }) => {
       });
   
       if (!response.ok) {
-        console.error(`Failed to fetch artist. Status: ${response.status} - ${response.statusText}`);
         throw new Error(`Failed to fetch artists with status: ${response.status}`);
       }
   
@@ -80,4 +79,62 @@ export const fetchArtists = async ({ query }: { query: string }) => {
     }
     
   };
+
+  export const fetchReleaseAlbum = async () => {
+    const config = await getSpotifyConfig();
+    if (!config){
+      console.error("Failed to fetch config")
+      return;
+    }
+
+    const {  BASE_URL, headers } = config;
+    const endpoint = `${BASE_URL}/browse/new-releases`;
+    console.log(`Fetch data: ${endpoint}`)
+    try{
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: headers,
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch albums with status: ${response.status}`);
+      }
+      const data = await response.json()
+      console.log("Fetch album: ", data);
+      return data;
+    }
+    catch(e){
+      console.error('Error fetching album', e)
+      return null
+    }
+  }
+
+  export const fetchArtistsAlbum = async ({ query }: {query: string}) => {
+    const config = await getSpotifyConfig();
+    if (!config){
+      console.error("Failed to fetch config")
+      return;
+    }
+
+    const {  BASE_URL, headers } = config;
+    const endpoint = `${BASE_URL}/artists/${encodeURIComponent(query)}/albums`;
+    console.log(`Fetch data: ${endpoint}`)
+    try{
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: headers,
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch a-album with status: ${response.status}`);
+      }
+      const data = await response.json()
+      console.log("Fetch a-album: ", data);
+      return data;
+    }
+    catch(e){
+      console.error('Error fetching a-album', e)
+      return null
+    }
+  }
   
