@@ -1,12 +1,13 @@
 import { ActivityIndicator, Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { fetchArtists, fetchArtistsAlbum, fetchReleaseAlbum } from "@/services/api";
+import { fetchArtists, fetchArtistsAlbum, fetchMultipleArtistsAlbums, fetchReleaseAlbum } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import { FlatList } from "react-native";
 import ArtistsCard from "@/components/ArtistsCard";
 import AlbumCard from "@/components/AlbumCard";
-import PopularPlaylists from "@/components/PopularPlaylists";
+import PopularPlaylists from "@/components/ArtistsAlbum";
+import ArtistsAlbum from "@/components/ArtistsAlbum";
 
 export default function Index() {
 
@@ -22,20 +23,25 @@ export default function Index() {
           error: albumError
         } = useFetch(() => fetchReleaseAlbum())
 
+        const artistIds = [
+          "6mEQK9m2krja6X1cfsAjfl",
+          "1vCWHaC5f2uS3yhpwWbIA6",
+          "2CIMQHirSU0MQqyYHq0eOx"
+        ];
+
   const { data: artistalbum,
           loading: artistalbumLoading,
           error: artistalbumError
-        } = useFetch(() => fetchArtistsAlbum({
-          query: '0TnOYISbd1XYRBk9myaseg'
-        }))
+        } = useFetch(() => fetchMultipleArtistsAlbums(artistIds))
+
 
   return (
-    <View className="flex flex-col flex-1 bg-gray-900">
+    <ScrollView showsVerticalScrollIndicator={false}  className="flex flex-col pb-10 bg-gray-900">
       {/* You have an Image component without a source. It's currently rendering a full-screen gray background. 
          Consider adding a 'source' prop to display an actual image. */}
 
       {/* Header Section */}
-      <View className="flex flex-row justify-between items-center h-16">
+      <View className="flex flex-row justify-between items-center h-16" >
 
         {/* Title */}
         <View className="ml-5">
@@ -60,7 +66,7 @@ export default function Index() {
       </View>
 
       {/* Suggested Artists Section */}
-      <View className="flex-1 max-h-[28%]">
+      <View>
         <Text className="text-xl color-white ml-5 mt-5">Tác giả đề xuất</Text>
 
         {/* Loading State */}
@@ -99,7 +105,7 @@ export default function Index() {
         )}
       </View>
 
-      <View className="flex-1 max-h-[28%]">
+      <View>
       <Text className="text-xl color-white ml-5 mt-5">Album mới ra mắt</Text>
         {albumLoading ? (
           <ActivityIndicator
@@ -110,7 +116,7 @@ export default function Index() {
         ) : albumError ? (
           <Text>Error: {error?.message}</Text>
         ) : (
-          <View className="flex-1 mt-5">
+          <View className="flex-1 mt-5 ml-2.5 mr-2.5">
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -126,31 +132,43 @@ export default function Index() {
         )}
       </View>
 
-      <View className="flex-1 max-h-[30%]">
-        {playlistLoading ? (
+      <View className="mb-14">
+        {artistalbumLoading ? (
           <ActivityIndicator
-          size="large"
-          color="white"
-          className="mt-10 self-center"
-        />
-        ) : playlistError ? (
+            size="large"
+            color="white"
+            className="mt-10 self-center"
+          />
+        ) : artistalbumError ? (
           <Text>{error?.message}</Text>
         ) : (
-          <View className="flex-1 mt-5">
-            <>
-            <Text className="text-xl color-white ml-5 mt-5">Album của {data.artists}</Text>
-            <FlatList
-              data={playlist?.playlists.items}
-              renderItem={({ item }) => (
-                <PopularPlaylists
-                  {...item}
-                />
-              )}
-            />
-            </>
-          </View>
+          <>
+            {artistalbum?.map((albumGroup, index) => {
+              const artist = data?.artists.find(
+                (a: { id: string }) => a.id === artistIds[index]
+              );
+              const artistName = artist?.name ?? "Unknown Artist";
+
+              return (
+                <View key={artistIds[index]}>
+                  <Text className="text-xl color-white ml-5 mt-5">
+                    Album của {artistName}
+                  </Text>
+                  <View className="mt-2 ml-2.5 mr-2.5">
+                    <FlatList
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      data={albumGroup?.items}
+                      renderItem={({ item }) => <ArtistsAlbum {...item} />}
+                      keyExtractor={(item) => item.id.toString()}
+                    />
+                  </View>
+                </View>
+              );
+            })}
+          </>
         )}
       </View>
-    </View>
+    </ScrollView>
   );
 }

@@ -23,11 +23,10 @@ interface Album{
 interface ArtistsAlbum{
     id: string,
     name: string,
-    type: string,
     images: {
         url:string,
     }[],
-    owner:{
-        display_name:string
+    artists:{
+        name:string
     }[]
 }

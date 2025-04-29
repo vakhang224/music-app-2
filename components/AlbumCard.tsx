@@ -5,8 +5,8 @@ import { Link } from 'expo-router'
 const AlbumCard = ({id, name, images, artists}: Album) => {
   return (
     <Link href={`/album/${id}`} asChild>
-      <TouchableOpacity className='w-32 ml-5'>
-        <View className="w-full h-32 mb-2">
+      <TouchableOpacity className='w-32 ml-2.5 mr-2.5'>
+        <View className="w-full h-32 mb-2 rounded-md overflow-hidden">
           <Image source={{
             uri: images?.[0]?.url ?? 'https://via.placeholder.com/300'
           }}

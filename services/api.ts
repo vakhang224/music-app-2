@@ -1,5 +1,5 @@
 
-const API_BASE_URL = "http://192.168.138.244:8888"
+const API_BASE_URL = "http://192.168.1.70:8888"
 
 // Rest of your code remains the same
 interface TokenResponse {
@@ -109,6 +109,8 @@ export const fetchArtists = async ({ query }: { query: string }) => {
     }
   }
 
+  // Gọi album của artist cụ thể
+
   export const fetchArtistsAlbum = async ({ query }: {query: string}) => {
     const config = await getSpotifyConfig();
     if (!config){
@@ -137,4 +139,12 @@ export const fetchArtists = async ({ query }: { query: string }) => {
       return null
     }
   }
+
+  export async function fetchMultipleArtistsAlbums(artistIds: string[]) {
+  const results = await Promise.all(
+    artistIds.map(id => fetchArtistsAlbum({ query: id }))
+  );
+  return results;
+}
+
   
