@@ -51,8 +51,7 @@ export const getSpotifyConfig = async () => {
 export const fetchArtists = async ({ query }: { query: string }) => {
     const config = await getSpotifyConfig(); // Await to get the config with accessToken
     if (!config) {
-      console.error('Failed to get Spotify config');
-      return;
+      throw new Error('Failed to get Spotify config');
     }
   
     const { BASE_URL, headers } = config;
@@ -145,6 +144,32 @@ export const fetchArtists = async ({ query }: { query: string }) => {
     artistIds.map(id => fetchArtistsAlbum({ query: id }))
   );
   return results;
+}
+
+export const fetchAlbums = async (albumId: string): Promise<AlbumTracks> => {
+  const config = await getSpotifyConfig();
+  if (!config) {
+    throw new Error('Failed to get Spotify config');
+  }
+
+  const {  BASE_URL, headers } = config;
+  try{
+    const response = await fetch(`${BASE_URL}/albums/${albumId}`,{
+      method: 'GET',
+      headers: headers,
+    });
+
+    if(!response.ok){
+      throw new Error('Failt to fetch album tracks')
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch(e){
+    console.log(e);
+    throw e;
+  }
 }
 
   

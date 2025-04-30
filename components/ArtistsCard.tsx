@@ -8,7 +8,7 @@ const ArtistsCard = ({id, images, name, type}: Artists) => {
     //@ts-ignore
     <Link href={`/song/${id}`} asChild>
       <TouchableOpacity
-      className={`w-[45%] flex flex-row bg-black rounded-lg h-14`}>
+      className={`w-[45%] flex flex-row bg-[#101010] rounded-lg h-14`}>
         <Image source={{
           uri: images 
             ? `${images[0]?.url}` 

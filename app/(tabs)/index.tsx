@@ -6,7 +6,6 @@ import useFetch from "@/services/useFetch";
 import { FlatList } from "react-native";
 import ArtistsCard from "@/components/ArtistsCard";
 import AlbumCard from "@/components/AlbumCard";
-import PopularPlaylists from "@/components/ArtistsAlbum";
 import ArtistsAlbum from "@/components/ArtistsAlbum";
 
 export default function Index() {
@@ -36,7 +35,8 @@ export default function Index() {
 
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}  className="flex flex-col pb-10 bg-gray-900">
+    <View  className="flex pb-10 bg-black">
+      <ScrollView>
       {/* You have an Image component without a source. It's currently rendering a full-screen gray background. 
          Consider adding a 'source' prop to display an actual image. */}
 
@@ -85,6 +85,7 @@ export default function Index() {
           <View className="flex-1 mt-5 ml-8">
             <>
               <FlatList
+                scrollEnabled={false}
                 data={data?.artists}
                 renderItem={({item}) => (
                   <ArtistsCard
@@ -118,6 +119,7 @@ export default function Index() {
         ) : (
           <View className="flex-1 mt-5 ml-2.5 mr-2.5">
             <FlatList
+              
               horizontal
               showsHorizontalScrollIndicator={false}
               data={album?.albums.items}
@@ -156,6 +158,7 @@ export default function Index() {
                   </Text>
                   <View className="mt-2 ml-2.5 mr-2.5">
                     <FlatList
+                      
                       horizontal
                       showsHorizontalScrollIndicator={false}
                       data={artistalbum?.items}
@@ -169,6 +172,7 @@ export default function Index() {
           </>
         )}
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }

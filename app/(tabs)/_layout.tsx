@@ -183,14 +183,24 @@ const _layout = () => {
         <Tabs.Screen
             name="song/[id]"
             options={{
-                href:null
-            }}
+                headerShown: false, // Ẩn header
+                tabBarShowLabel: false, // Ẩn nhãn tab
+                tabBarStyle: {
+                  display: 'none', // Ẩn tabBar
+                },
+                href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
+              }}
         />
         <Tabs.Screen
             name="album/[id]"
             options={{
-                href:null
-            }}
+                headerShown: false, // Ẩn header
+                tabBarShowLabel: false, // Ẩn nhãn tab
+                tabBarStyle: {
+                  display: 'none', // Ẩn tabBar
+                },
+                href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
+              }}
         />
     </Tabs>
   )
