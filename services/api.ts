@@ -146,7 +146,7 @@ export const fetchArtists = async ({ query }: { query: string }) => {
   return results;
 }
 
-export const fetchAlbums = async (albumId: string): Promise<AlbumTracks> => {
+export const fetchAlbums = async (id: string): Promise<AlbumTracks> => {
   const config = await getSpotifyConfig();
   if (!config) {
     throw new Error('Failed to get Spotify config');
@@ -154,7 +154,7 @@ export const fetchAlbums = async (albumId: string): Promise<AlbumTracks> => {
 
   const {  BASE_URL, headers } = config;
   try{
-    const response = await fetch(`${BASE_URL}/albums/${albumId}`,{
+    const response = await fetch(`${BASE_URL}/albums/${id}`,{
       method: 'GET',
       headers: headers,
     });

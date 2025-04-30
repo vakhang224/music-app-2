@@ -7,171 +7,139 @@ import { FlatList } from "react-native";
 import ArtistsCard from "@/components/ArtistsCard";
 import AlbumCard from "@/components/AlbumCard";
 import ArtistsAlbum from "@/components/ArtistsAlbum";
+import { StatusBar } from "expo-status-bar";
 
 export default function Index() {
-
-  const { data,
-          loading,
-          error,
-        } = useFetch(() => fetchArtists({
+  // Gọi API để lấy danh sách nhiều nghệ sĩ dựa vào ID
+  const { data, loading, error } = useFetch(() => fetchArtists({
     query: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6,5dfZ5uSmzR7VQK0udbAVpf,6mEQK9m2krja6X1cfsAjfl,1n9JKdEdLxrbgJiqz1WZFJ'
-  }))
+  }));
 
-  const { data: album,
-          loading: albumLoading,
-          error: albumError
-        } = useFetch(() => fetchReleaseAlbum())
+  // Gọi API để lấy các album mới phát hành
+  const { data: album, loading: albumLoading, error: albumError } = useFetch(() => fetchReleaseAlbum());
 
-        const artistIds = [
-          "6mEQK9m2krja6X1cfsAjfl",
-          "1vCWHaC5f2uS3yhpwWbIA6",
-          "2CIMQHirSU0MQqyYHq0eOx"
-        ];
+  // Danh sách nghệ sĩ cần lấy album riêng
+  const artistIds = [
+    "6mEQK9m2krja6X1cfsAjfl",
+    "1vCWHaC5f2uS3yhpwWbIA6",
+    "2CIMQHirSU0MQqyYHq0eOx"
+  ];
 
-  const { data: artistalbum,
-          loading: artistalbumLoading,
-          error: artistalbumError
-        } = useFetch(() => fetchMultipleArtistsAlbums(artistIds))
-
+  // Gọi API để lấy album của từng nghệ sĩ trong danh sách
+  const { data: artistalbum, loading: artistalbumLoading, error: artistalbumError } = useFetch(() => fetchMultipleArtistsAlbums(artistIds));
 
   return (
-    <View  className="flex pb-10 bg-black">
+    <View className="flex pb-10 bg-black">
+      <StatusBar hidden={true} />
       <ScrollView>
-      {/* You have an Image component without a source. It's currently rendering a full-screen gray background. 
-         Consider adding a 'source' prop to display an actual image. */}
 
-      {/* Header Section */}
-      <View className="flex flex-row justify-between items-center h-16" >
+        {/* Thanh tiêu đề (header) */}
+        <View className="flex flex-row justify-between items-center h-16 mt-5">
+          {/* Tiêu đề Trang chủ */}
+          <View className="ml-5">
+            <Text className="text-3xl text-white">Trang chủ</Text>
+          </View>
 
-        {/* Title */}
-        <View className="ml-5">
-          <Text className="text-3xl text-white">Trang chủ</Text>
+          {/* Biểu tượng Thông báo và Lịch sử */}
+          <View className="flex flex-row w-24 items-center justify-center">
+            <TouchableOpacity className="mr-6">
+              <Ionicons name="notifications" size={22} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity className="mr-6">
+              <FontAwesome5 name="history" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
 
-        {/* Icons on the right */}
-        <View className="flex flex-row w-24 items-center justify-center">
+        {/* Section: Tác giả đề xuất */}
+        <View>
+          <Text className="text-xl color-white ml-5 mt-5">Tác giả đề xuất</Text>
 
-          {/* Notifications Icon */}
-          <TouchableOpacity className="mr-6">
-            <Ionicons name="notifications" size={22} color="white" className="w-6 h-6 mr-3" />
-          </TouchableOpacity>
-
-          {/* History Icon */}
-          <TouchableOpacity className="mr-6">
-            <FontAwesome5 name="history" size={20} color="white" className="w-6 h-6 mr-3" />
-          </TouchableOpacity>
-
-        </View>
-
-      </View>
-
-      {/* Suggested Artists Section */}
-      <View>
-        <Text className="text-xl color-white ml-5 mt-5">Tác giả đề xuất</Text>
-
-        {/* Loading State */}
-        {loading ? (
-          <ActivityIndicator
-            size="large"
-            color="white"
-            className="mt-10 self-center"
-          />
-        ) : error ? (
-          // Error State
-          <Text>Error: {error?.message}</Text>
-        ) : (
-          
-          // Data Loaded State
-          <View className="flex-1 mt-5 ml-8">
-            <>
+          {loading ? (
+            // Trạng thái đang tải
+            <ActivityIndicator size="large" color="white" className="mt-10 self-center" />
+          ) : error ? (
+            // Trạng thái lỗi
+            <Text>Error: {error?.message}</Text>
+          ) : (
+            // Hiển thị danh sách nghệ sĩ
+            <View className="flex-1 mt-5 ml-8">
               <FlatList
                 scrollEnabled={false}
                 data={data?.artists}
-                renderItem={({item}) => (
-                  <ArtistsCard
-                    {...item}
-                  />
-                )}
+                renderItem={({ item }) => <ArtistsCard {...item} />}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
                 columnWrapperStyle={{
                   justifyContent: 'flex-start',
-                  gap:20,
-                  paddingRight:5,
-                  marginBottom:10
+                  gap: 20,
+                  paddingRight: 5,
+                  marginBottom: 10
                 }}
               />
-            </>
-          </View>
-        )}
-      </View>
+            </View>
+          )}
+        </View>
 
-      <View>
-      <Text className="text-xl color-white ml-5 mt-5">Album mới ra mắt</Text>
-        {albumLoading ? (
-          <ActivityIndicator
-            size="large"
-            color="white"
-            className="mt-10 self-center"
-          />
-        ) : albumError ? (
-          <Text>Error: {error?.message}</Text>
-        ) : (
-          <View className="flex-1 mt-5 ml-2.5 mr-2.5">
-            <FlatList
-              
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={album?.albums.items}
-              renderItem={({ item }) => (
-                <AlbumCard
-                  {...item}
-                />
-              )}
-              keyExtractor={(item) => item.id.toString()}
-            />
-          </View>
-        )}
-      </View>
+        {/* Section: Album mới ra mắt */}
+        <View>
+          <Text className="text-xl color-white ml-5 mt-5">Album mới ra mắt</Text>
 
-      <View className="mb-14">
-        {artistalbumLoading ? (
-          <ActivityIndicator
-            size="large"
-            color="white"
-            className="mt-10 self-center"
-          />
-        ) : artistalbumError ? (
-          <Text>{error?.message}</Text>
-        ) : (
-          <>
-            {artistalbum?.map((artistalbum, index) => {
-              const artist = data?.artists.find(
-                (a: { id: string }) => a.id === artistIds[index]
-              );
-              const artistName = artist?.name ?? "Unknown Artist";
+          {albumLoading ? (
+            <ActivityIndicator size="large" color="white" className="mt-10 self-center" />
+          ) : albumError ? (
+            <Text>Error: {albumError?.message}</Text>
+          ) : (
+            <View className="flex-1 mt-5 ml-2.5 mr-2.5">
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={album?.albums.items}
+                renderItem={({ item }) => <AlbumCard {...item} />}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </View>
+          )}
+        </View>
 
-              return (
-                <View key={artistIds[index]}>
-                  <Text className="text-xl color-white ml-5 mt-5">
-                    Album của {artistName}
-                  </Text>
-                  <View className="mt-2 ml-2.5 mr-2.5">
-                    <FlatList
-                      
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      data={artistalbum?.items}
-                      renderItem={({ item }) => <ArtistsAlbum {...item} />}
-                      keyExtractor={(item) => item.id.toString()}
-                    />
+        {/* Section: Album của từng nghệ sĩ */}
+        <View className="mb-14">
+          {artistalbumLoading ? (
+            <ActivityIndicator size="large" color="white" className="mt-10 self-center" />
+          ) : artistalbumError ? (
+            <Text>{artistalbumError?.message}</Text>
+          ) : (
+            <>
+              {artistalbum?.map((artistAlbum, index) => {
+                // Tìm tên nghệ sĩ tương ứng với album
+                const artist = data?.artists.find((a) => a.id === artistIds[index]);
+                const artistName = artist?.name ?? "Unknown Artist";
+
+                return (
+                  <View key={artistIds[index]}>
+                    {/* Tên và avatar của nghệ sĩ */}
+                    <View className="flex flex-row items-center">
+                      <Image source={{ uri: artist?.images[0]?.url }} className="h-10 w-10 ml-5 rounded-full mt-5" />
+                      <Text className="text-xl color-white ml-3 mt-5">Album của {artistName}</Text>
+                    </View>
+
+                    {/* Danh sách album theo chiều ngang */}
+                    <View className="mt-2 ml-2.5 mr-2.5">
+                      <FlatList
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        data={artistAlbum?.items}
+                        renderItem={({ item }) => <ArtistsAlbum {...item} />}
+                        keyExtractor={(item) => item.id.toString()}
+                      />
+                    </View>
                   </View>
-                </View>
-              );
-            })}
-          </>
-        )}
-      </View>
+                );
+              })}
+            </>
+          )}
+        </View>
+
       </ScrollView>
     </View>
   );

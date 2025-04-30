@@ -1,65 +1,125 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { fetchAlbums, fetchArtists } from '@/services/api';
 import useFetch from '@/services/useFetch';
 import Foundation from '@expo/vector-icons/Foundation';
+import { StatusBar } from 'expo-status-bar';
 
+// Định nghĩa kiểu dữ liệu cho một track riêng lẻ từ AlbumTracks
+type Track = AlbumTracks['tracks']['items'][0];
+
+type Props = {
+  tracks: Track[];
+};
+
+// Hàm chuyển đổi thời lượng từ milliseconds sang định dạng mm:ss
+const formatDuration = (ms: number) => {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+};
+
+// Component hiển thị danh sách các bài hát trong album
+const Tracks = ({ tracks }: Props) => {
+  return (
+    <FlatList
+      scrollEnabled={false} // Vô hiệu hóa scroll vì nằm trong ScrollView cha
+      data={tracks}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <TouchableOpacity className="px-5 py-3 mt-2 mx-5 bg-[#191919] rounded-md justify-between flex-row">
+          {/* Hiển thị tên bài hát và nghệ sĩ */}
+          <View>
+            <Text className="text-white">{item.name}</Text>
+            <Text className="text-white">{item.artists[0].name}</Text>
+          </View>
+          {/* Hiển thị thời lượng bài hát */}
+          <View>
+            <Text className="text-white">{formatDuration(item.duration_ms)}</Text>
+          </View>
+        </TouchableOpacity>
+      )}
+    />
+  );
+};
+
+// Component chính hiển thị thông tin chi tiết album
 const AlbumDetail = () => {
-  const { id } = useLocalSearchParams();  // Lấy id album từ URL
+  const { id } = useLocalSearchParams(); // Lấy id album từ URL
 
-  // Sử dụng useFetch để fetch album dựa trên id
-  const { data: albums, loading: albumsLoading } = useFetch(() => fetchAlbums(id as string), true);
-  const [artists, setArtists] = useState<any>(null);
-  const [artistLoading, setArtistLoading] = useState(false);
+  // Gọi API lấy dữ liệu album theo id
+  const { data: albums, loading } = useFetch(() => fetchAlbums(id as string), true, [id]);
 
-  // Fetch dữ liệu nghệ sĩ khi album đã có
+  const [artists, setArtists] = useState<any>(null); // Lưu thông tin nghệ sĩ
+
+  // Gọi API lấy thông tin nghệ sĩ khi có dữ liệu album
   useEffect(() => {
     const fetchArtistData = async () => {
       if (albums?.artists?.[0]?.id) {
         try {
-          setArtistLoading(true);
+          setArtists(null); // Reset trước khi fetch
           const data = await fetchArtists({ query: albums.artists[0].id });
           setArtists(data);
         } catch (error) {
           console.error("Error fetching artist:", error);
-        } finally {
-          setArtistLoading(false);
         }
       }
     };
+    fetchArtistData(); // Chạy khi albums thay đổi
+  }, [albums]);
 
-    fetchArtistData();
-  }, [albums]);  // Fetch lại khi `albums` thay đổi
+  // Hiển thị loading khi chưa có dữ liệu
+  if (loading || !artists) {
+    return (
+      <View className="flex-1 bg-black justify-center items-center">
+        <ActivityIndicator size="large" color="#ffffff" />
+        <Text className="text-white mt-4">Đang tải album...</Text>
+      </View>
+    );
+  }
 
-  // Khi `id` thay đổi, `useEffect` sẽ gọi lại fetchAlbums để lấy dữ liệu mới
-  useEffect(() => {
-    if (id) {
-      // Trigger fetch lại album khi `id` thay đổi
-      fetchAlbums(id as string);
-    }
-  }, [id]);  // Chạy lại mỗi khi `id` thay đổi
-
+  // UI chính khi đã có dữ liệu album & nghệ sĩ
   return (
     <View className="bg-black flex-1">
+      <StatusBar hidden={true} />
       <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
+        
+        {/* Phần ảnh và tên album */}
         <View className="bg-[#191919] overflow-hidden pb-5">
-          <Image
-            source={{ uri: `${albums?.images[0]?.url}` }} className="w-full h-[250px] justify-self-center" resizeMode="cover"
-          />
+          {albums?.images[0]?.url && (
+            <Image
+              source={{ uri: albums.images[0].url }}
+              className="w-full h-[250px] justify-self-center"
+              resizeMode="cover"
+            />
+          )}
           <Text className="text-white text-2xl text-center mt-5">{albums?.name}</Text>
         </View>
 
+        {/* Thông tin nghệ sĩ + nút phát */}
         <View className="mt-5 ml-5 flex flex-row justify-between items-center">
           <View className="flex-row">
-            <Image source={{ uri: artists?.artists?.[0]?.images?.[0]?.url }} className="h-16 w-16 rounded-full" />
-            <Text className="text-white self-center ml-5 text-xl">Album của {albums?.artists[0].name}</Text>
+            <Image
+              source={{ uri: artists?.artists?.[0]?.images?.[0]?.url }}
+              className="h-16 w-16 rounded-full"
+            />
+            <Text className="text-white self-center ml-5 text-xl">
+              Album của {albums?.artists[0].name}
+            </Text>
           </View>
+          {/* Nút phát nhạc */}
           <TouchableOpacity className="items-center rounded-full border-white border-2 px-4 py-2.5 mr-10">
             <Foundation name="play" size={24} color="white" />
           </TouchableOpacity>
         </View>
+
+        {/* Danh sách bài hát */}
+        <View className="mt-5">
+          <Tracks tracks={albums?.tracks.items || []} />
+        </View>
+
       </ScrollView>
     </View>
   );

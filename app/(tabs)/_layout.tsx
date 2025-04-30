@@ -185,10 +185,17 @@ const _layout = () => {
             options={{
                 headerShown: false, // Ẩn header
                 tabBarShowLabel: false, // Ẩn nhãn tab
-                tabBarStyle: {
-                  display: 'none', // Ẩn tabBar
-                },
                 href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
+                tabBarStyle: {
+                    height: 60,
+                    marginTop: -100,
+                    marginBottom: 0,
+                    backgroundColor: 'transparent',
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0,
+                    shadowOpacity: 0,
+                    elevation: 0,
+                },
               }}
         />
         <Tabs.Screen
@@ -196,11 +203,26 @@ const _layout = () => {
             options={{
                 headerShown: false, // Ẩn header
                 tabBarShowLabel: false, // Ẩn nhãn tab
-                tabBarStyle: {
-                  display: 'none', // Ẩn tabBar
-                },
                 href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
-              }}
+                tabBarStyle: {
+                    height: 60,
+                    marginTop: -100,
+                    marginBottom: 0,
+                    backgroundColor: 'transparent',
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0,
+                    shadowOpacity: 0,
+                    elevation: 0,
+                },
+                tabBarBackground:() => (
+                    <LinearGradient
+                    colors={['rgba(0, 0, 0, 1)', 'rgba(255, 174, 0, 0)']}
+                    start={{ x: 0, y: 1 }} // 0deg in CSS starts from bottom
+                    end={{ x: 0, y: 0 }}   // and goes to top
+                    style={{flex: 1}}
+                    />
+                ),
+            }}
         />
     </Tabs>
   )
