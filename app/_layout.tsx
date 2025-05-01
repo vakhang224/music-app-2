@@ -11,5 +11,9 @@ export default function RootLayout() {
       name="/album/[id]"
       options={{headerShown:false}}
     />
+    <Stack.Screen
+      name="/artists/[id]"
+      options={{headerShown:false}}
+    />
   </Stack>;
 }

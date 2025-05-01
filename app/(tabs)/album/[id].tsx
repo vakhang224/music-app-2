@@ -6,12 +6,14 @@ import { fetchAlbums, fetchArtists } from '@/services/api';
 import useFetch from '@/services/useFetch';
 import Foundation from '@expo/vector-icons/Foundation';
 import { StatusBar } from 'expo-status-bar';
+import { AlbumTracks } from '@/interface/interfaces';
 
 // Định nghĩa kiểu dữ liệu cho một track riêng lẻ từ AlbumTracks
 type Track = AlbumTracks['tracks']['items'][0];
 
 type Props = {
   tracks: Track[];
+  albumImage?: string;
 };
 
 // Hàm chuyển đổi thời lượng từ milliseconds sang định dạng mm:ss
@@ -88,9 +90,9 @@ const AlbumDetail = () => {
         
         {/* Phần ảnh và tên album */}
         <View className="bg-[#191919] overflow-hidden pb-5">
-          {albums?.images[0]?.url && (
+          {albums?.images[0].url && (
             <Image
-              source={{ uri: albums.images[0].url }}
+              source={{ uri: albums?.images?.[0]?.url }}
               className="w-full h-[250px] justify-self-center"
               resizeMode="cover"
             />

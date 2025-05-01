@@ -1,126 +1,129 @@
-interface Artists {
-    id: string,
-    images: { url: string; height: number; width: number }[];
-    name: string,
-    type: string
+export interface ExternalUrl {
+  spotify: string;
 }
 
-interface Album{
-    id: string,
-    images:{
-        url:string,
-        width:number,
-        height:number
-        }[],
-    name: string,
-    type: string,
-    artists:{
-        name: string
-    }[]
-    };
-    
-
-interface ArtistsAlbum{
-    id: string,
-    name: string,
-    images: {
-        url:string,
-    }[],
-    artists:{
-        name:string
-    }[]
+export interface Image {
+  url: string;
+  height: number;
+  width: number;
 }
 
-interface AlbumTracks {
-  album_type: string;
-  total_tracks: number;
-  available_markets: string[];
-  external_urls: {
-    spotify: string;
-  };
-  href: string;
+export interface Artist {
   id: string;
-  images: Array<{
-    url: string;
-    height: number;
-    width: number;
-  }>;
   name: string;
-  release_date: string;
-  release_date_precision: string;
-  restrictions: {
-    reason: string;
-  };
   type: string;
   uri: string;
-  artists: Array<{
-    external_urls: {
-      spotify: string;
-    };
-    href: string;
-    id: string;
-    name: string;
-    type: string;
-    uri: string;
-  }>;
-  tracks: {
-    href: string;
-    limit: number;
-    next: string;
-    offset: number;
-    previous: string;
-    total: number;
-    items: Array<{
-      artists: Array<{
-        external_urls: {
-          spotify: string;
-        };
-        href: string;
-        id: string;
-        name: string;
-        type: string;
-        uri: string;
-      }>;
-      available_markets: string[];
-      disc_number: number;
-      duration_ms: number;
-      explicit: boolean;
-      external_urls: {
-        spotify: string;
-      };
-      href: string;
-      id: string;
-      is_playable: boolean;
-      linked_from: {
-        external_urls: {
-          spotify: string;
-        };
-        href: string;
-        id: string;
-        type: string;
-        uri: string;
-      };
-      restrictions: {
-        reason: string;
-      };
-      name: string;
-      preview_url: string;
-      track_number: number;
-      type: string;
-      uri: string;
-      is_local: boolean;
-    }>;
-  };
-  copyrights: Array<{
-    text: string;
-    type: string;
-  }>;
+  href: string;
+  external_urls: ExternalUrl;
+  images?: Image[]; // optional - chỉ dùng khi fetch nghệ sĩ riêng
+}
+
+export interface Album {
+  id: string;
+  name: string;
+  type: string;
+  uri: string;
+  href: string;
+  album_type: string;
+  artists: Artist[];
+  images: Image[];
+  release_date: string;
+  release_date_precision: string;
+  external_urls: ExternalUrl;
+  available_markets: string[];
+  total_tracks: number;
+  restrictions?: { reason: string };
+}
+
+export interface Track {
+  id: string;
+  name: string;
+  type: string;
+  uri: string;
+  href: string;
+  duration_ms: number;
+  explicit: boolean;
+  is_playable: boolean;
+  is_local: boolean;
+  track_number: number;
+  disc_number: number;
+  preview_url: string;
+  popularity: number;
+  album: Album;
+  artists: Artist[];
+  external_urls: ExternalUrl;
   external_ids: {
     isrc: string;
     ean: string;
     upc: string;
   };
-  genres: string[];
+  available_markets: string[];
+  linked_from?: object;
+  restrictions?: { reason: string };
+}
+
+export interface AlbumTracks {
+  id: string;
+  name: string;
+  type: string;
+  uri: string;
+  href: string;
+  album_type: string;
+  artists: Artist[];
+  images: Image[];
+  release_date: string;
+  release_date_precision: string;
+  available_markets: string[];
+  external_urls: ExternalUrl;
   label: string;
   popularity: number;
+  total_tracks: number;
+  tracks: {
+    href: string;
+    total: number;
+    limit: number;
+    offset: number;
+    next: string;
+    previous: string;
+    items: Track[];
+  };
+  external_ids: {
+    isrc: string;
+    ean: string;
+    upc: string;
+  };
+  copyrights: {
+    text: string;
+    type: string;
+  }[];
+  genres: string[];
+  restrictions?: { reason: string };
+}
+
+export interface PlaylistOwner {
+  id: string;
+  display_name: string;
+  href: string;
+  type: string;
+  uri: string;
+  external_urls: ExternalUrl;
+}
+
+export interface Playlist {
+  id: string;
+  name: string;
+  type: string;
+  uri: string;
+  href: string;
+  public: boolean;
+  collaborative: boolean;
+  description: string;
+  snapshot_id: string;
+  external_urls: ExternalUrl;
+  images: Image[];
+  owner: PlaylistOwner;
+  tracks: {
+    href: string;
+    total: number;
+  };
 }

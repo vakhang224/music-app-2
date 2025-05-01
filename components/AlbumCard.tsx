@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { Link } from 'expo-router'
+import { Album } from '@/interface/interfaces'
 
 const AlbumCard = ({id, name, images, artists}: Album) => {
   return (

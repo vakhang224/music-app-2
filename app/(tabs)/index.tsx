@@ -22,7 +22,7 @@ export default function Index() {
   const artistIds = [
     "6mEQK9m2krja6X1cfsAjfl",
     "1vCWHaC5f2uS3yhpwWbIA6",
-    "2CIMQHirSU0MQqyYHq0eOx"
+    "5dfZ5uSmzR7VQK0udbAVpf"
   ];
 
   // Gọi API để lấy album của từng nghệ sĩ trong danh sách
@@ -31,7 +31,7 @@ export default function Index() {
   return (
     <View className="flex pb-10 bg-black">
       <StatusBar hidden={true} />
-      <ScrollView>
+      <ScrollView className="">
 
         {/* Thanh tiêu đề (header) */}
         <View className="flex flex-row justify-between items-center h-16 mt-5">
@@ -112,7 +112,7 @@ export default function Index() {
             <>
               {artistalbum?.map((artistAlbum, index) => {
                 // Tìm tên nghệ sĩ tương ứng với album
-                const artist = data?.artists.find((a) => a.id === artistIds[index]);
+                const artist = data?.artists.find((a: { id: string; }) => a.id === artistIds[index]);
                 const artistName = artist?.name ?? "Unknown Artist";
 
                 return (

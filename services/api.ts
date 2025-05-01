@@ -1,3 +1,4 @@
+import { AlbumTracks, Track } from "@/interface/interfaces";
 
 const API_BASE_URL = "http://192.168.1.70:8888"
 
@@ -172,4 +173,32 @@ export const fetchAlbums = async (id: string): Promise<AlbumTracks> => {
   }
 }
 
+export const Search = async ({ query }: {query: string}) => {
+  const config = await getSpotifyConfig();
+  if (!config){
+    console.error("Failed to fetch config")
+    return;
+  }
+
+  const {  BASE_URL, headers } = config;
+  const endpoint = `${BASE_URL}/search?q=${encodeURIComponent(query)}&type=album%2Cartist%2Ctrack%2Cplaylist`;
+  console.log(`Fetch data: ${endpoint}`)
+  try{
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: headers,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Search failed: ${response.status}`);
+    }
+    const data = await response.json()
+    console.log("Search: ", data);
+    return data;
+  }
+  catch(e){
+    console.error('Error searching', e)
+    return null
+  }
+}
   

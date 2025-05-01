@@ -1,8 +1,9 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { Link } from 'expo-router'
+import { Album } from '@/interface/interfaces';
 
-const ArtistsAlbum = ({ id, name, images }: ArtistsAlbum) => {
+const ArtistsAlbum = ({ id, name, images }: Album) => {
   return (
     <Link href={`/album/${id}`} asChild>
       <TouchableOpacity className="w-40 ml-1 mr-1 mt-3 bg-[#191919] rounded-md overflow-hidden">
