@@ -18,7 +18,7 @@ export interface Artist {
   images?: Image[]; // optional - chỉ dùng khi fetch nghệ sĩ riêng
 }
 
-export interface Album {
+interface Album {
   id: string;
   name: string;
   type: string;
@@ -35,7 +35,7 @@ export interface Album {
   restrictions?: { reason: string };
 }
 
-export interface Track {
+interface Track {
   id: string;
   name: string;
   type: string;

@@ -6,10 +6,9 @@ import { fetchAlbums, fetchArtists } from '@/services/api';
 import useFetch from '@/services/useFetch';
 import Foundation from '@expo/vector-icons/Foundation';
 import { StatusBar } from 'expo-status-bar';
-import { AlbumTracks } from '@/interface/interfaces';
+import { Track } from '@/interface/interfaces';
 
 // Định nghĩa kiểu dữ liệu cho một track riêng lẻ từ AlbumTracks
-type Track = AlbumTracks['tracks']['items'][0];
 
 type Props = {
   tracks: Track[];
@@ -51,29 +50,39 @@ const Tracks = ({ tracks }: Props) => {
 const AlbumDetail = () => {
   const { id } = useLocalSearchParams(); // Lấy id album từ URL
 
-  // Gọi API lấy dữ liệu album theo id
-  const { data: albums, loading } = useFetch(() => fetchAlbums(id as string), true, [id]);
 
-  const [artists, setArtists] = useState<any>(null); // Lưu thông tin nghệ sĩ
+
+  // Gọi API lấy dữ liệu album theo id
+  const { data: albums, loading, refetch:albumsRefetch} = useFetch(() => fetchAlbums(id as string), false, [id]);
+
+  const artistId = albums?.artists?.[0]?.id
+
+  const {
+    data: artists,
+    loading: artistLoading,
+    refetch: artistsRefetch
+  } = useFetch(
+    () => artistId ? fetchArtists({ query: artistId }) : Promise.resolve(null),
+    false,
+    [artistId]
+  );
+
 
   // Gọi API lấy thông tin nghệ sĩ khi có dữ liệu album
   useEffect(() => {
-    const fetchArtistData = async () => {
-      if (albums?.artists?.[0]?.id) {
-        try {
-          setArtists(null); // Reset trước khi fetch
-          const data = await fetchArtists({ query: albums.artists[0].id });
-          setArtists(data);
-        } catch (error) {
-          console.error("Error fetching artist:", error);
-        }
-      }
-    };
-    fetchArtistData(); // Chạy khi albums thay đổi
-  }, [albums]);
+    if (id) {
+      albumsRefetch();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (artistId) {
+      artistsRefetch();
+    }
+  }, [artistId]);
 
   // Hiển thị loading khi chưa có dữ liệu
-  if (loading || !artists) {
+  if (loading || artistLoading || !albums || !artists) {
     return (
       <View className="flex-1 bg-black justify-center items-center">
         <ActivityIndicator size="large" color="#ffffff" />
@@ -81,7 +90,6 @@ const AlbumDetail = () => {
       </View>
     );
   }
-
   // UI chính khi đã có dữ liệu album & nghệ sĩ
   return (
     <View className="bg-black flex-1">
@@ -104,7 +112,7 @@ const AlbumDetail = () => {
         <View className="mt-5 ml-5 flex flex-row justify-between items-center">
           <View className="flex-row">
             <Image
-              source={{ uri: artists?.artists?.[0]?.images?.[0]?.url }}
+              source={{ uri: artists?.artists?.[0]?.images?.[0].url }}
               className="h-16 w-16 rounded-full"
             />
             <Text className="text-white self-center ml-5 text-xl">
