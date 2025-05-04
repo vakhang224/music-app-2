@@ -59,7 +59,7 @@ const search = () => {
         />
       </View>
 
-      <View className="flex-1">
+      <View>
         {searchLoading && (
           <ActivityIndicator size="large" color="white" className="mt-10 self-center" />
         )}
@@ -118,27 +118,6 @@ const search = () => {
                 renderItem={({item}) => (
                   <View className="w-1/3 mb-1 mt-1"> 
                     <AlbumCard {...item} />
-                  </View>
-                )}
-                keyExtractor={(item) => item.id.toString()} 
-                numColumns={3}
-                contentContainerStyle={{
-                  paddingBottom: 20
-                }}
-                />
-                
-            </View>
-
-            <View className="flex-1 mt-1 ml-1 w-30 h-30">
-              {searchFinished && (
-                  <Text className='text-white self-center text-xl ml-5 mt-5 mb-2'>Playlists</Text>
-              )}
-              <FlatList
-                scrollEnabled={false}
-                data={data?.playlists.items.filter((item: { id: any; }) => item && item.id).slice(0, 6)}
-                renderItem={({item}) => (
-                  <View className="w-1/3 mb-1 mt-1"> 
-                    <PlaylistCard {...item} />
                   </View>
                 )}
                 keyExtractor={(item) => item.id.toString()} 

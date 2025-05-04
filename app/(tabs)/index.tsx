@@ -29,9 +29,9 @@ export default function Index() {
   const { data: artistalbum, loading: artistalbumLoading, error: artistalbumError } = useFetch(() => fetchMultipleArtistsAlbums(artistIds));
 
   return (
-    <View className="flex pb-14 bg-black">
+    <View className="flex-1 pb-14 bg-black">
       <StatusBar hidden={true} />
-      <ScrollView className="">
+      <ScrollView className="flex-1">
 
         {/* Thanh tiêu đề (header) */}
         <View className="flex flex-row justify-between items-center h-16 mt-5">
@@ -74,7 +74,8 @@ export default function Index() {
                   justifyContent: 'flex-start',
                   gap: 20,
                   paddingRight: 5,
-                  marginBottom: 10
+                  marginBottom: 10,
+                  flex: 1
                 }}
               />
             </View>
@@ -97,6 +98,7 @@ export default function Index() {
                 data={album?.albums.items}
                 renderItem={({ item }) => <AlbumCard {...item} />}
                 keyExtractor={(item) => item.id.toString()}
+                
               />
             </View>
           )}
