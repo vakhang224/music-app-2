@@ -2,15 +2,14 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import "@/app/global.css";
 import { Link } from 'expo-router';
+import { Artist } from '@/interface/interfaces';
 
-const ArtistsCard = ({id, images, name, type}: Artists) => {
-  const [isHovered, setIsHovered] = useState(false);
-
+const ArtistsCard = ({id, images, name}: Artist) => {
   return (
     //@ts-ignore
-    <Link href={`/song/${id}`} asChild>
-      <TouchableOpacity onPressIn={() => setIsHovered(true)} onPressOut={() => setIsHovered(false)}
-      className={`w-[45%] flex flex-row ${isHovered ? 'bg-gray-500' : 'bg-black'} rounded-lg h-14`}>
+    <Link href={`/artists/${id}`} asChild>
+      <TouchableOpacity
+      className={`w-[45%] flex flex-row bg-[#101010] rounded-lg h-14`}>
         <Image source={{
           uri: images 
             ? `${images[0]?.url}` 

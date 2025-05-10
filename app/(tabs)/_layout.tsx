@@ -9,8 +9,11 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 
+
 const _layout = () => {
   return (
+    <>
+
     <Tabs>
         <Tabs.Screen
             name="index"
@@ -183,10 +186,75 @@ const _layout = () => {
         <Tabs.Screen
             name="song/[id]"
             options={{
-                href:null
+                headerShown: false, // Ẩn header
+                tabBarShowLabel: false, // Ẩn nhãn tab
+                href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
+                tabBarStyle: {
+                    height: 60,
+                    marginTop: -100,
+                    marginBottom: 0,
+                    backgroundColor: 'transparent',
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0,
+                    shadowOpacity: 0,
+                    elevation: 0,
+                },
+              }}
+        />
+        <Tabs.Screen
+            name="album/[id]"
+            options={{
+                headerShown: false, // Ẩn header
+                tabBarShowLabel: false, // Ẩn nhãn tab
+                href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
+                tabBarStyle: {
+                    height: 60,
+                    marginTop: -100,
+                    marginBottom: 0,
+                    backgroundColor: 'transparent',
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0,
+                    shadowOpacity: 0,
+                    elevation: 0,
+                },
+                tabBarBackground:() => (
+                    <LinearGradient
+                    colors={['rgba(0, 0, 0, 1)', 'rgba(255, 174, 0, 0)']}
+                    start={{ x: 0, y: 1 }} // 0deg in CSS starts from bottom
+                    end={{ x: 0, y: 0 }}   // and goes to top
+                    style={{flex: 1}}
+                    />
+                ),
+            }}
+        />
+        <Tabs.Screen
+            name="artists/[id]"
+            options={{
+                headerShown: false, // Ẩn header
+                tabBarShowLabel: false, // Ẩn nhãn tab
+                href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
+                tabBarStyle: {
+                    height: 60,
+                    marginTop: -100,
+                    marginBottom: 0,
+                    backgroundColor: 'transparent',
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0,
+                    shadowOpacity: 0,
+                    elevation: 0,
+                },
+                tabBarBackground:() => (
+                    <LinearGradient
+                    colors={['rgba(0, 0, 0, 1)', 'rgba(255, 174, 0, 0)']}
+                    start={{ x: 0, y: 1 }} // 0deg in CSS starts from bottom
+                    end={{ x: 0, y: 0 }}   // and goes to top
+                    style={{flex: 1}}
+                    />
+                ),
             }}
         />
     </Tabs>
+    </>
   )
 }
 

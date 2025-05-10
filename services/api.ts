@@ -1,3 +1,4 @@
+import { AlbumTracks, Track } from "@/interface/interfaces";
 
 const API_BASE_URL = "http://192.168.183.214:8888"
 
@@ -51,8 +52,7 @@ export const getSpotifyConfig = async () => {
 export const fetchArtists = async ({ query }: { query: string }) => {
     const config = await getSpotifyConfig(); // Await to get the config with accessToken
     if (!config) {
-      console.error('Failed to get Spotify config');
-      return;
+      throw new Error('Failed to get Spotify config');
     }
   
     const { BASE_URL, headers } = config;
@@ -67,7 +67,6 @@ export const fetchArtists = async ({ query }: { query: string }) => {
       });
   
       if (!response.ok) {
-        console.error(`Failed to fetch artist. Status: ${response.status} - ${response.statusText}`);
         throw new Error(`Failed to fetch artists with status: ${response.status}`);
       }
   
@@ -80,4 +79,184 @@ export const fetchArtists = async ({ query }: { query: string }) => {
     }
     
   };
+
+  export const fetchReleaseAlbum = async () => {
+    const config = await getSpotifyConfig();
+    if (!config){
+      console.error("Failed to fetch config")
+      return;
+    }
+
+    const {  BASE_URL, headers } = config;
+    const endpoint = `${BASE_URL}/browse/new-releases`;
+    console.log(`Fetch data: ${endpoint}`)
+    try{
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: headers,
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch albums with status: ${response.status}`);
+      }
+      const data = await response.json()
+      console.log("Fetch album: ", data);
+      return data;
+    }
+    catch(e){
+      console.error('Error fetching album', e)
+      return null
+    }
+  }
+
+  // Gọi album của artist cụ thể
+
+  export const fetchArtistsAlbum = async ({ query }: {query: string}) => {
+    const config = await getSpotifyConfig();
+    if (!config){
+      console.error("Failed to fetch config")
+      return;
+    }
+
+    const {  BASE_URL, headers } = config;
+    const endpoint = `${BASE_URL}/artists/${encodeURIComponent(query)}/albums`;
+    console.log(`Fetch data: ${endpoint}`)
+    try{
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: headers,
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch a-album with status: ${response.status}`);
+      }
+      const data = await response.json()
+      console.log("Fetch a-album: ", data);
+      return data;
+    }
+    catch(e){
+      console.error('Error fetching a-album', e)
+      return null
+    }
+  }
+
+  export async function fetchMultipleArtistsAlbums(artistIds: string[]) {
+  const results = await Promise.all(
+    artistIds.map(id => fetchArtistsAlbum({ query: id }))
+  );
+  return results;
+}
+
+export const fetchAlbums = async (id: string): Promise<AlbumTracks> => {
+  const config = await getSpotifyConfig();
+  if (!config) {
+    throw new Error('Failed to get Spotify config');
+  }
+
+  const {  BASE_URL, headers } = config;
+  try{
+    const response = await fetch(`${BASE_URL}/albums/${id}`,{
+      method: 'GET',
+      headers: headers,
+    });
+
+    if(!response.ok){
+      throw new Error('Failt to fetch album tracks')
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch(e){
+    console.log(e);
+    throw e;
+  }
+}
+
+export const Search = async ({ query }: {query: string}) => {
+  const config = await getSpotifyConfig();
+  if (!config){
+    console.error("Failed to fetch config")
+    return;
+  }
+
+  const {  BASE_URL, headers } = config;
+  const endpoint = `${BASE_URL}/search?q=${encodeURIComponent(query)}&type=album%2Cartist%2Ctrack%2Cplaylist`;
+  console.log(`Fetch data: ${endpoint}`)
+  try{
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: headers,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Search failed: ${response.status}`);
+    }
+    const data = await response.json()
+    console.log("Search: ", data);
+    return data;
+  }
+  catch(e){
+    console.error('Error searching', e)
+    return null
+  }
+}
   
+
+export const fetchPlaylists = async ({ query }: {query: string}) => {
+  const config = await getSpotifyConfig();
+  if (!config){
+    console.error("Failed to fetch config")
+    return;
+  }
+
+  const {  BASE_URL, headers } = config;
+  const endpoint = `${BASE_URL}/playlists/${encodeURIComponent(query)}`;
+  console.log(`Fetch data: ${endpoint}`)
+  try{
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: headers,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Fetch playlists failed: ${response.status}`);
+    }
+    const data = await response.json()
+    console.log("playlists: ", data);
+    return data;
+  }
+  catch(e){
+    console.error('Error fetching playlists', e)
+    return null
+  }
+}
+
+export const fetchTopTracks = async ({ query }: {query: string}) => {
+  const config = await getSpotifyConfig();
+  if (!config){
+    console.error("Failed to fetch config")
+    return;
+  }
+
+  const {  BASE_URL, headers } = config;
+  const endpoint = `${BASE_URL}/artists/${encodeURIComponent(query)}/top-tracks`;
+  console.log(`Fetch data: ${endpoint}`)
+  try{
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: headers,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Fetch top track failed: ${response.status}`);
+    }
+    const data = await response.json()
+    console.log("playlists: ", data);
+    return data;
+  }
+  catch(e){
+    console.error('Error fetching top track', e)
+    return null
+  }
+}

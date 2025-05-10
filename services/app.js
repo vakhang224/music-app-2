@@ -3,8 +3,8 @@ var request = require('request');
 var querystring = require('querystring');
 var cors = require('cors');
 
-var client_id = 'b42cc2747e39432084ae1aee8268d3e9';
-var client_secret = '65236f599c06485185deb28fe3c58c2c';
+var client_id = 'bd8df4c718f04da99e7cb2cc4db8f245';
+var client_secret = 'c37c9eab59834f5ba2e1015d278c4364';
 var redirect_uri = 'http://127.0.0.1:8888/callback';
 
 var app = express();
@@ -31,7 +31,7 @@ function generateRandomString(length) {
 
 app.get('/login', function (req, res) {
   var state = generateRandomString(16);
-  var scope = 'user-read-private user-read-email';
+  var scope = 'user-read-private user-read-email user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played';
 
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({

@@ -8,7 +8,11 @@ export default function RootLayout() {
       options={{headerShown:false}}
     />
     <Stack.Screen
-      name="/songs/[id]"
+      name="/album/[id]"
+      options={{headerShown:false}}
+    />
+    <Stack.Screen
+      name="/artists/[id]"
       options={{headerShown:false}}
     />
   </Stack>;
