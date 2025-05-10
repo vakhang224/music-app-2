@@ -15,5 +15,9 @@ export default function RootLayout() {
       name="/artists/[id]"
       options={{headerShown:false}}
     />
+    <Stack.Screen
+    name="song/[id]"
+    options={{ presentation: 'modal', headerShown: false }} // 👈 đảm bảo đè lên toàn bộ
+    />
   </Stack>;
 }

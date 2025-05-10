@@ -2,10 +2,11 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Track } from '@/interface/interfaces'
+import { Link } from 'expo-router'
 
 
 
-const SearchTracks = ({ name, artists, duration_ms, album }: Track) => {
+const SearchTracks = ({ id, name, artists, duration_ms, album }: Track) => {
     // Format duration from milliseconds to mm:ss
     const formatDuration = (ms?: number) => {
       if (!ms) return '0:00'
@@ -15,6 +16,7 @@ const SearchTracks = ({ name, artists, duration_ms, album }: Track) => {
     }
   
     return (
+      <Link href={`/song/${id}`} asChild>
       <TouchableOpacity className="px-5 py-3 mt-2 mx-5 bg-[#191919] rounded-md justify-between flex-row">
         <View>
           <Text className="text-white font-semibold text-base">{name}</Text>
@@ -26,6 +28,7 @@ const SearchTracks = ({ name, artists, duration_ms, album }: Track) => {
           <Text className="text-gray-500 text-">{formatDuration(duration_ms)}</Text>
         </View>
       </TouchableOpacity>
+      </Link>
     );
   }
 export default SearchTracks

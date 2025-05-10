@@ -183,24 +183,7 @@ const _layout = () => {
                 ),
             }}
         />
-        <Tabs.Screen
-            name="song/[id]"
-            options={{
-                headerShown: false, // Ẩn header
-                tabBarShowLabel: false, // Ẩn nhãn tab
-                href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
-                tabBarStyle: {
-                    height: 60,
-                    marginTop: -100,
-                    marginBottom: 0,
-                    backgroundColor: 'transparent',
-                    borderTopWidth: 0,
-                    borderBottomWidth: 0,
-                    shadowOpacity: 0,
-                    elevation: 0,
-                },
-              }}
-        />
+    
         <Tabs.Screen
             name="album/[id]"
             options={{

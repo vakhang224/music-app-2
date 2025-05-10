@@ -1,6 +1,6 @@
 import { AlbumTracks, Track } from "@/interface/interfaces";
 
-const API_BASE_URL = "http://192.168.1.70:8888"
+const API_BASE_URL = "http://192.168.198.108:8888"
 
 // Rest of your code remains the same
 interface TokenResponse {
@@ -260,3 +260,34 @@ export const fetchTopTracks = async ({ query }: {query: string}) => {
     return null
   }
 }
+
+
+export const fetchTracks = async ({ query }: {query: string}) => {
+  const config = await getSpotifyConfig();
+  if (!config){
+    console.error("Failed to fetch config")
+    return;
+  }
+
+  const {  BASE_URL, headers } = config;
+  const endpoint = `${BASE_URL}/tracks/${encodeURIComponent(query)}`;
+  console.log(`Fetch data: ${endpoint}`)
+  try{
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: headers,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Fetch track failed: ${response.status}`);
+    }
+    const data = await response.json()
+    console.log("track: ", data);
+    return data;
+  }
+  catch(e){
+    console.error('Error fetching track', e)
+    return null
+  }
+}
+
