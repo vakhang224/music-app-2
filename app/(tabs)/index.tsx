@@ -8,6 +8,7 @@ import ArtistsCard from "@/components/ArtistsCard";
 import AlbumCard from "@/components/AlbumCard";
 import ArtistsAlbum from "@/components/ArtistsAlbum";
 import { StatusBar } from "expo-status-bar";
+import { Track } from "react-native-track-player";
 
 export default function Index() {
   // Gọi API để lấy danh sách nhiều nghệ sĩ dựa vào ID

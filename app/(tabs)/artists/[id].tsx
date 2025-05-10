@@ -15,41 +15,47 @@ const formatDuration = (ms: number) => {
   return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 };
 
+import { usePlayerStore } from '@/store/usePlayerStore';
+
 const TopTracks = ({ tracks }: { tracks: Track[] }) => {
+  const { play } = usePlayerStore();
+
   return (
     <FlatList
       scrollEnabled={false}
       data={tracks}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
-        <Link href={`/song/${item.id}`} asChild>
-          <TouchableOpacity className="flex-row items-stretch mt-2 mx-5">
-            <Image
-              source={{ uri: item.album.images[0].url }}
-              className="w-20 h-20 rounded-md mr-1"
-              resizeMode="cover"
-            />
-            <View className="flex-1 bg-[#191919] px-4 py-3 rounded-md justify-center">
-              <View className="flex-row justify-between items-center">
-                <View className="flex-1 pr-2">
-                  <Text className="text-white font-semibold" numberOfLines={1}>
-                    {item.name}
-                  </Text>
-                  <Text className="text-white text-sm opacity-70" numberOfLines={1}>
-                    {item.artists[0].name}
-                  </Text>
-                </View>
-                <Text className="text-white text-sm opacity-50">
-                  {formatDuration(item.duration_ms)}
+        <TouchableOpacity
+          onPress={() => play(item.id)}
+          className="flex-row items-stretch mt-2 mx-5"
+        >
+          <Image
+            source={{ uri: item.album.images[0].url }}
+            className="w-20 h-20 rounded-md mr-1"
+            resizeMode="cover"
+          />
+          <View className="flex-1 bg-[#191919] px-4 py-3 rounded-md justify-center">
+            <View className="flex-row justify-between items-center">
+              <View className="flex-1 pr-2">
+                <Text className="text-white font-semibold" numberOfLines={1}>
+                  {item.name}
+                </Text>
+                <Text className="text-white text-sm opacity-70" numberOfLines={1}>
+                  {item.artists[0].name}
                 </Text>
               </View>
+              <Text className="text-white text-sm opacity-50">
+                {formatDuration(item.duration_ms)}
+              </Text>
             </View>
-          </TouchableOpacity>
-        </Link>
+          </View>
+        </TouchableOpacity>
       )}
     />
   );
 };
+
 
 
 

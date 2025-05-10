@@ -1,49 +1,109 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native'
-import React, { useState } from 'react'
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Slider from '@react-native-community/slider';
-import { useLocalSearchParams } from 'expo-router';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
+import localTracks from '@/assets/songs/localTracks';
+import { usePlayerStore } from '@/store/usePlayerStore';
+import { fetchTracks, fetchAlbumTracks } from '@/services/api';
 import useFetch from '@/services/useFetch';
-import { fetchTracks } from '@/services/api';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
+export default function MusicPlayerScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
 
+  const {
+    currentTrackId,
+    isPlaying,
+    play,
+    pause,
+    resume,
+    playNext,
+    playPrev,
+  } = usePlayerStore();
 
-const SongPlayer = () => {
-    const { id } = useLocalSearchParams<{ id: string }>();
+  const localTrack = localTracks.find(t => t.id === currentTrackId);
 
-    const {data: tracks, loading: tracksLoading, error: tracksError} = useFetch(() => fetchTracks({ query: id }));
-console.log("tracks: ", tracks?.artists?.[0]?.name);
+  // Gọi play khi vừa mở màn nếu ID khác currentTrackId
+  useEffect(() => {
+    if (id && id !== currentTrackId) {
+      play(id);
+    }
+  }, [id]);
+
+  const { data: track, loading } = useFetch(
+    async () => currentTrackId ? fetchTracks({ query: currentTrackId }) : null,
+    !!currentTrackId,
+    [currentTrackId]
+  );
+
+  const [albumTracks, setAlbumTracks] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (track?.album?.id) {
+      fetchAlbumTracks({ query: track.album.id }).then((data) => {
+        if (data?.items) {
+          setAlbumTracks(data.items);
+        }
+      });
+    }
+  }, [track?.album?.id]);
+
+  const handlePlayNext = async () => {
+    await playNext(albumTracks);
+  };
+
+  const handlePlayPrev = async () => {
+    await playPrev(albumTracks);
+  };
+
+  if (loading || !track) {
+    return (
+      <View className="flex-1 justify-center items-center bg-black">
+        <ActivityIndicator color="white" size="large" />
+        <Text className="text-white mt-4">Đang tải bài hát...</Text>
+      </View>
+    );
+  }
+
   return (
-    <View className="bg-black flex-1">
+    <View className="flex-1 items-center justify-center bg-black p-6">
+      <TouchableOpacity
+        className="absolute top-12 left-4"
+        onPress={() => router.back()}
+      >
+        <Text className="text-white text-2xl">⬇️</Text>
+      </TouchableOpacity>
 
-      <View className="flex-row items-center pt-7 px-7 gap-8">
-        <AntDesign name="shrink" size={20} color="white"/>
-        <Text className="text-white text-" numberOfLines={1}>Album của bài hát: {tracks?.album?.name}</Text>
-      </View>
       <Image
-        source={{ uri: tracks?.album?.images?.[0].url }}
-        className="w-80 h-80 rounded-full self-center mt-10"
+        source={{ uri: track.album.images[0].url }}
+        className="w-64 h-64 rounded-2xl mb-6"
+        resizeMode="cover"
       />
-      <View className="flex-1">
-        <Text className="text-white text-3xl font-bold text-center mt-10">{tracks?.name}</Text>
-        <Text className="text-white text-xl font-bold text-center opacity-50">{tracks?.artists?.[0]?.name}</Text>
-       <View className='w-full flex items-center bg-gray-700 rounded-full -px-5'>
-        <Slider
-            style={{ width: '80%', height: 40}}
-            minimumValue={0}
-            maximumValue={1}
-            minimumTrackTintColor="#FFFFFF"
-            maximumTrackTintColor="#000000"
-            thumbTintColor="#FFFFFF"
-          />
-       </View>
-      </View>
-      <View>
+      <Text className="text-white text-xl font-bold text-center">{track.name}</Text>
+      <Text className="text-gray-400 text-md mb-8">{track.artists[0].name}</Text>
 
+      <View className="flex-row items-center justify-center space-x-6">
+        <TouchableOpacity onPress={handlePlayPrev}>
+          <Text className="text-white text-2xl">⏮</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={localTrack ? (isPlaying ? pause : resume) : undefined}
+        >
+          <Text className="text-white text-3xl">
+            {localTrack ? (isPlaying ? '⏸' : '▶️') : '🚫'}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handlePlayNext}>
+          <Text className="text-white text-2xl">⏭</Text>
+        </TouchableOpacity>
       </View>
+
+      {!localTrack && (
+        <Text className="text-gray-500 mt-4 text-sm">
+          (Không có file nhạc cục bộ — không thể phát)
+        </Text>
+      )}
     </View>
   );
-};
-
-export default SongPlayer
+}
