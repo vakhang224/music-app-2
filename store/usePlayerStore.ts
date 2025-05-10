@@ -1,15 +1,17 @@
-// store/usePlayerStore.ts
+// Tạo store với Zustand để quản lý trạng thái phát nhạc
 import { create } from 'zustand';
 import { Audio } from 'expo-av';
 import localTracks from '@/assets/songs/localTracks';
 
 interface PlayerState {
-  currentTrackId: string | null;
-  currentTrackMeta: any | null;
-  isPlaying: boolean;
-  sound: Audio.Sound | null;
-  position: number;
-  duration: number;
+  currentTrackId: string | null; // ID bài hát hiện tại
+  currentTrackMeta: any | null;  // Metadata bài hiện tại (tên, nghệ sĩ, ảnh...)
+  isPlaying: boolean;            // Có đang phát nhạc không
+  sound: Audio.Sound | null;     // Đối tượng âm thanh đang phát
+  position: number;              // Vị trí hiện tại trong bài (ms)
+  duration: number;              // Tổng thời gian bài (ms)
+
+  // Các hàm điều khiển nhạc
   play: (id: string) => Promise<void>;
   pause: () => Promise<void>;
   resume: () => Promise<void>;
@@ -17,6 +19,7 @@ interface PlayerState {
   playPrev: (albumTracks: any[]) => Promise<void>;
 }
 
+// Tạo Zustand store
 export const usePlayerStore = create<PlayerState>((set, get) => ({
   currentTrackId: null,
   currentTrackMeta: null,
@@ -25,48 +28,54 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   position: 0,
   duration: 0,
 
- play: async (id: string) => {
-  const { sound: oldSound } = get();
+  // Phát một bài hát mới theo ID
+  play: async (id: string) => {
+    const { sound: oldSound } = get();
 
-  if (oldSound) await oldSound.unloadAsync();
+    // Nếu có bài đang phát trước đó thì dừng lại
+    if (oldSound) await oldSound.unloadAsync();
 
-  // Luôn cập nhật ID để màn hình hiện đúng thông tin track
-  set({
-    currentTrackId: id,
-    currentTrackMeta: null,
-    sound: null,
-    isPlaying: false,
-    position: 0,
-    duration: 0,
-  });
-
-  const track = localTracks.find(t => t.id === id);
-  if (!track) {
-    console.log('🚫 Không có file nhạc local cho:', id);
-    return;
-  }
-
-  const { sound, status } = await Audio.Sound.createAsync(track.url, { shouldPlay: true });
-
-  sound.setOnPlaybackStatusUpdate(status => {
-    if (!status.isLoaded) return;
+    // Reset trạng thái về mặc định trước khi phát bài mới
     set({
-      position: status.positionMillis,
-      duration: status.durationMillis || 0,
-      isPlaying: status.isPlaying,
+      currentTrackId: id,
+      currentTrackMeta: null,
+      sound: null,
+      isPlaying: false,
+      position: 0,
+      duration: 0,
     });
-  });
 
-  set({
-    sound,
-    currentTrackMeta: track,
-    isPlaying: true,
-  });
+    // Tìm file nhạc local theo ID
+    const track = localTracks.find(t => t.id === id);
+    if (!track) {
+      console.log('🚫 Không có file nhạc local cho:', id);
+      return;
+    }
 
-  console.log('▶️ Đang phát:', track.id);
-},
+    // Load và phát nhạc bằng expo-av
+    const { sound, status } = await Audio.Sound.createAsync(track.url, { shouldPlay: true });
 
+    // Theo dõi trạng thái phát nhạc liên tục
+    sound.setOnPlaybackStatusUpdate(status => {
+      if (!status.isLoaded) return;
+      set({
+        position: status.positionMillis,
+        duration: status.durationMillis || 0,
+        isPlaying: status.isPlaying,
+      });
+    });
 
+    // Lưu lại thông tin vào store
+    set({
+      sound,
+      currentTrackMeta: track,
+      isPlaying: true,
+    });
+
+    console.log('▶️ Đang phát:', track.id);
+  },
+
+  // Tạm dừng phát nhạc
   pause: async () => {
     const { sound } = get();
     if (sound) {
@@ -75,6 +84,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
   },
 
+  // Tiếp tục phát nhạc
   resume: async () => {
     const { sound } = get();
     if (sound) {
@@ -83,6 +93,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
   },
 
+  // Phát bài kế tiếp trong danh sách album
   playNext: async (albumTracks: any[]) => {
     const { currentTrackId, play } = get();
     const idx = albumTracks.findIndex(t => t.id === currentTrackId);
@@ -95,6 +106,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
   },
 
+  // Phát bài trước đó trong danh sách album
   playPrev: async (albumTracks: any[]) => {
     const { currentTrackId, play } = get();
     const idx = albumTracks.findIndex(t => t.id === currentTrackId);
