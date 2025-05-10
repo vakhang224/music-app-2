@@ -1,11 +1,20 @@
-import React from 'react';
-import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
+
 
 const setting = () => {
+
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const backgroundColor = isDarkMode ? 'white' : '#c0c0c0';
   const profileImage = require('@/assets/images/profile.webp');
+  
+  const toggleDarkMode = () => {
+    setIsDarkMode(previousState => !previousState);
+  };
+  
 
   return (
-    <View className='absolute w-full z-0 h-full bg-[#c0c0c0]'>
+    <View className='absolute w-full z-0 h-full' style={{ backgroundColor }}>
       <ScrollView style={{ marginTop: 2 }}> {/* Tăng marginTop để có khoảng cách */}
 
         <View style={styles.profileContainer}>
@@ -20,6 +29,19 @@ const setting = () => {
             <Text style={styles.info}>3 danh sách nhạc</Text>
           </View>
         </View>
+
+        {/* Toggle background color with text and switch */}
+        <View style={styles.toggleContainer}>
+          <Text style={styles.toggleText}>Đổi màu nền</Text>
+          <Switch
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+            thumbColor={isDarkMode ? '#f4f3f4' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleDarkMode}
+            value={isDarkMode}
+          />
+        </View>
+
 
         {/* Khung đăng xuất bây giờ là một phần của ScrollView */}
         <View style={styles.logoutContainer}>
@@ -41,6 +63,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E1E1E', // Màu nền cho khung (tùy chọn)
     borderRadius: 10,          // Bo tròn góc của khung (tùy chọn)
     marginHorizontal: 0,      // Thêm margin ở hai bên khung
+    marginTop: 20,             // Thêm margin phía trên khung
     marginBottom: 20,         // Thêm margin phía dưới khung
      
   },
@@ -92,6 +115,31 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  toggleButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    margin: 16,
+  },
+  toggleButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: 'white',
+    margin: 16,
+    borderRadius: 8,
+  },
+  toggleText: {
+    fontSize: 18,
   },
 });
 

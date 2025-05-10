@@ -29,7 +29,7 @@ export default function Index() {
   const { data: artistalbum, loading: artistalbumLoading, error: artistalbumError } = useFetch(() => fetchMultipleArtistsAlbums(artistIds));
 
   return (
-    <View className="flex-1 pb-14 bg-black">
+    <View className="flex-1 pb-14 bg-one">
       <StatusBar hidden={true} />
       <ScrollView className="flex-1">
 
