@@ -132,6 +132,7 @@ const search = () => {
           </View>
         )}
       </View>
+      <View className="pb-6"/>
 
     </ScrollView>
   );

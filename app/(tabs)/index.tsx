@@ -8,7 +8,6 @@ import ArtistsCard from "@/components/ArtistsCard";
 import AlbumCard from "@/components/AlbumCard";
 import ArtistsAlbum from "@/components/ArtistsAlbum";
 import { StatusBar } from "expo-status-bar";
-import { Track } from "react-native-track-player";
 
 export default function Index() {
   // Gọi API để lấy danh sách nhiều nghệ sĩ dựa vào ID
@@ -30,7 +29,7 @@ export default function Index() {
   const { data: artistalbum, loading: artistalbumLoading, error: artistalbumError } = useFetch(() => fetchMultipleArtistsAlbums(artistIds));
 
   return (
-    <View className="flex-1 pb-14 bg-black">
+    <View className="flex-1 pb-28 bg-black">
       <StatusBar hidden={true} />
       <ScrollView className="flex-1">
 

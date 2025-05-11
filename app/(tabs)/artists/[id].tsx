@@ -88,7 +88,7 @@ const ArtistDetail = () => {
   // Fetch playlists by searching artist name
 
   return (
-    <View className="bg-black flex-1">
+    <View className="bg-black flex-1 pb-20">
       <ScrollView>
         <View className=" pb-5">
           {artistLoading && (

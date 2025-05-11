@@ -7,6 +7,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
 
 
@@ -26,7 +27,7 @@ const _layout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -49,14 +50,6 @@ const _layout = () => {
                     </Text>
                   </View>
                 ),
-                tabBarBackground:() => (
-                    <LinearGradient
-                    colors={['rgba(0, 0, 0, 1)', 'rgba(255, 174, 0, 0)']}
-                    start={{ x: 0, y: 1 }} // 0deg in CSS starts from bottom
-                    end={{ x: 0, y: 0 }}   // and goes to top
-                    style={{flex: 1}}
-                    />
-                ),
             }}
         />
         <Tabs.Screen
@@ -68,7 +61,7 @@ const _layout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -90,14 +83,6 @@ const _layout = () => {
                     </Text>
                   </View>
                 ),
-                tabBarBackground:() => (
-                    <LinearGradient
-                    colors={['rgba(0, 0, 0, 1)', 'rgba(255, 174, 0, 0)']}
-                    start={{ x: 0, y: 1 }} // 0deg in CSS starts from bottom
-                    end={{ x: 0, y: 0 }}   // and goes to top
-                    style={{flex: 1}}
-                    />
-                ),
             }}
         />
         <Tabs.Screen
@@ -109,7 +94,7 @@ const _layout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -131,14 +116,7 @@ const _layout = () => {
                     </Text>
                   </View>
                 ),
-                tabBarBackground:() => (
-                    <LinearGradient
-                    colors={['rgba(0, 0, 0, 1)', 'rgba(255, 174, 0, 0)']}
-                    start={{ x: 0, y: 1 }} // 0deg in CSS starts from bottom
-                    end={{ x: 0, y: 0 }}   // and goes to top
-                    style={{flex: 1}}
-                    />
-                ),
+
             }}
         />
         <Tabs.Screen
@@ -150,7 +128,7 @@ const _layout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -173,14 +151,7 @@ const _layout = () => {
                     </Text>
                   </View>
                 ),
-                tabBarBackground:() => (
-                    <LinearGradient
-                    colors={['rgba(0, 0, 0, 1)', 'rgba(255, 174, 0, 0)']}
-                    start={{ x: 0, y: 1 }} // 0deg in CSS starts from bottom
-                    end={{ x: 0, y: 0 }}   // and goes to top
-                    style={{flex: 1}}
-                    />
-                ),
+
             }}
         />
     
@@ -194,20 +165,13 @@ const _layout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
                     elevation: 0,
                 },
-                tabBarBackground:() => (
-                    <LinearGradient
-                    colors={['rgba(0, 0, 0, 1)', 'rgba(255, 174, 0, 0)']}
-                    start={{ x: 0, y: 1 }} // 0deg in CSS starts from bottom
-                    end={{ x: 0, y: 0 }}   // and goes to top
-                    style={{flex: 1}}
-                    />
-                ),
+
             }}
         />
         <Tabs.Screen
@@ -220,20 +184,13 @@ const _layout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
                     elevation: 0,
                 },
-                tabBarBackground:() => (
-                    <LinearGradient
-                    colors={['rgba(0, 0, 0, 1)', 'rgba(255, 174, 0, 0)']}
-                    start={{ x: 0, y: 1 }} // 0deg in CSS starts from bottom
-                    end={{ x: 0, y: 0 }}   // and goes to top
-                    style={{flex: 1}}
-                    />
-                ),
+
             }}
         />
     </Tabs>

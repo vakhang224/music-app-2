@@ -147,8 +147,8 @@ export default function MusicPlayerScreen() {
       />
 
       {/* Tên bài hát & nghệ sĩ */}
-      <Text className="text-white text-3xl font-bold text-center mt-10">{track.name}</Text>
-      <Text className="text-gray-400 text-md mb-8">{track.artists[0].name}</Text>
+      <Text className="text-white text-3xl font-bold text-center mt-16 max-w-[80%]">{track.name}</Text>
+      <Text className="text-gray-400 text-md mb-10 mt-3">{track.artists[0].name}</Text>
 
       {/* Thanh thời gian & slider */}
       <View className="w-full px-6 -mt-7 items-center">

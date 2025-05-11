@@ -18,9 +18,9 @@ const SearchTracks = ({ id, name, artists, duration_ms, album }: Track) => {
       onPress={() => play(id)}
       className="px-5 py-3 mt-2 mx-5 bg-[#191919] rounded-md justify-between flex-row"
     >
-      <View>
-        <Text className="text-white font-semibold text-base">{name}</Text>
-        <Text className="text-gray-400 text-sm">
+      <View className="max-w-[90%]">
+        <Text className="text-white font-semibold text-base" numberOfLines={1}>{name}</Text>
+        <Text className="text-gray-400 text-sm" numberOfLines={1}>
           {artists.map((a) => a.name).join(', ')} • {album.name}
         </Text>
       </View>
