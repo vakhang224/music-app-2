@@ -72,7 +72,7 @@ export default function MiniPlayer() {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => (isPlaying ? pause() : resume())}>
-          <Text className="text-white text-xl">
+          <Text className="text-white text-xl ml-2">
             {isPlaying ? 
             <Foundation name="pause" size={24} color="white" />
             : <Foundation name="play" size={24} color="white" /> }
