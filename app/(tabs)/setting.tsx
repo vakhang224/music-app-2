@@ -17,7 +17,7 @@ const setting = () => {
     <View className='absolute w-full z-0 h-full' style={{ backgroundColor }}>
       <ScrollView style={{ marginTop: 2 }}> {/* Tăng marginTop để có khoảng cách */}
 
-        <View style={styles.profileContainer}>
+        <View style={styles.profileContainer} > {/*className="p-20 mt-1"*/}
           <View style={styles.imageContainer}>
             <Image
               style={styles.profileImage}
