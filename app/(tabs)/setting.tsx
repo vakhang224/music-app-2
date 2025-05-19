@@ -1,146 +1,79 @@
-import React, { useState } from 'react';
-import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Image, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { ThemeContext } from '@/theme/ThemeContext';
+import { useNavigation } from 'expo-router';
+import EditProfile from '@/app/profiles/EditProfile';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+import { useRouter } from 'expo-router';
+import { useProfile } from '@/components/ProfileContext';
+import ProfileCard from '@/components/ProfileCard';  // Đường dẫn đúng tới ProfileContext
+
+const Setting = () => {
+  const { isDarkMode, toggleDarkMode, background, text, primary } = useContext(ThemeContext);
+  const { profile } = useProfile();
+  const profileImage = profile.image
+    ? { uri: profile.image }
+    : require('@/assets/images/profile.webp');
+  const navigation = useNavigation();
+  const router = useRouter();
+  const { card } = useContext(ThemeContext);
 
 
-const setting = () => {
-
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const backgroundColor = isDarkMode ? 'white' : '#c0c0c0';
-  const profileImage = require('@/assets/images/profile.webp');
-  
-  const toggleDarkMode = () => {
-    setIsDarkMode(previousState => !previousState);
-  };
-  
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Refreshed profile:', profile);
+    }, [profile])
+  );
 
   return (
-    <View className='absolute w-full z-0 h-full' style={{ backgroundColor }}>
-      <ScrollView style={{ marginTop: 2 }}> {/* Tăng marginTop để có khoảng cách */}
+    <View className="flex-1" style={{ backgroundColor: background }}>
+      <View className="justify-between">
+        <Text style={{ color: text }} className="text-3xl mt-4 ml-7 font-bold">
+          Cài đặt
+        </Text>
 
-        <View style={styles.profileContainer} > {/*className="p-20 mt-1"*/}
-          <View style={styles.imageContainer}>
-            <Image
-              style={styles.profileImage}
-              source={profileImage}
+        <ScrollView style={{ height: '65%' }} contentContainerStyle={{ paddingTop: 5 }}>
+          {/* Profile Card */}
+          <ProfileCard />
+
+          {/* Toggle Background Color */}
+          <View className="flex-row items-center justify-between px-4 py-3 mx-4 rounded-lg" style={{ backgroundColor: 'transparent' }}>
+            <Text className="text-lg" style={{ color: text }}>Đổi màu nền</Text>
+            <Switch
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              thumbColor="#f4f3f4"
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleDarkMode}
+              value={isDarkMode}
             />
           </View>
-          <View style={styles.textContainer}>
-            <Text style={styles.name}>Nguyễn Văn A</Text>
-            <Text style={styles.info}>3 danh sách nhạc</Text>
-          </View>
-        </View>
+        </ScrollView>
 
-        {/* Toggle background color with text and switch */}
-        <View style={styles.toggleContainer}>
-          <Text style={styles.toggleText}>Đổi màu nền</Text>
-          <Switch
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            thumbColor={isDarkMode ? '#f4f3f4' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleDarkMode}
-            value={isDarkMode}
-          />
-        </View>
-
-
-        {/* Khung đăng xuất bây giờ là một phần của ScrollView */}
-        <View style={styles.logoutContainer}>
-          <TouchableOpacity style={styles.logoutButton}>
-            <Text style={styles.logoutText}>Đăng xuất</Text>
+        {/* Logout Button */}
+        <View
+          style={{
+            backgroundColor: card,
+            paddingVertical: 16,
+            alignItems: 'center',
+            marginHorizontal: 20,
+            borderRadius: 16,
+            marginBottom: 20,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              paddingVertical: 8,
+              paddingHorizontal: 20,
+              borderRadius: 8,
+            }}
+          >
+            <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 16 }}>Đăng xuất</Text>
           </TouchableOpacity>
         </View>
-
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  profileContainer: {
-    flexDirection: 'row',       // Sắp xếp các phần tử theo hàng ngang
-    alignItems: 'center',      // Căn chỉnh các phần tử theo chiều dọc ở giữa
-    padding: 20,               // Thêm padding xung quanh khung
-    backgroundColor: '#1E1E1E', // Màu nền cho khung (tùy chọn)
-    borderRadius: 10,          // Bo tròn góc của khung (tùy chọn)
-    marginHorizontal: 0,      // Thêm margin ở hai bên khung
-    marginTop: 20,             // Thêm margin phía trên khung
-    marginBottom: 20,         // Thêm margin phía dưới khung
-     
-  },
-  imageContainer: {
-    width: 80,                // Kích thước container hình ảnh
-    height: 80,               // Kích thước container hình ảnh
-    borderRadius: 40,         // Tạo hình tròn
-    overflow: 'hidden',       // Ẩn các phần vượt quá border radius
-    marginRight: 15,          // Khoảng cách giữa hình ảnh và chữ
-  },
-  profileImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  textContainer: {
-    flex: 1,                  // Cho phép phần chữ chiếm không gian còn lại
-    justifyContent: 'center', // Căn chỉnh dọc các dòng chữ ở giữa
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 5,
-  },
-  info: {
-    fontSize: 16,
-    color: '#A9A9A9',
-    marginBottom: 3,
-  },
-  detail: {
-    fontSize: 14,
-    color: '#007AFF',
-  },
-  logoutContainer: {
-    backgroundColor: '#2C2C2C',
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginHorizontal: 20,
-    borderRadius: 10,
-    marginBottom: 20, // Thêm margin dưới nút đăng xuất
-  },
-  logoutButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  logoutText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  toggleButton: {
-    backgroundColor: '#2196F3',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    margin: 16,
-  },
-  toggleButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  toggleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: 'white',
-    margin: 16,
-    borderRadius: 8,
-  },
-  toggleText: {
-    fontSize: 18,
-  },
-});
-
-export default setting;
+export default Setting;

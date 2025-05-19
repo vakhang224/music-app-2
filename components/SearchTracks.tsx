@@ -1,11 +1,15 @@
 import { View, Text, Image } from 'react-native'
-import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Track } from '@/interface/interfaces'
+import { ThemeContext } from '@/theme/ThemeContext';
+import React, { useContext } from 'react'
 
 
 
 const SearchTracks = ({ name, artists, duration_ms, album }: Track) => {
+const { card, text, subtitle } = useContext(ThemeContext);
+
+
     // Format duration from milliseconds to mm:ss
     const formatDuration = (ms?: number) => {
       if (!ms) return '0:00'
@@ -15,10 +19,12 @@ const SearchTracks = ({ name, artists, duration_ms, album }: Track) => {
     }
   
     return (
-      <TouchableOpacity className="px-5 py-3 mt-2 mx-5 bg-[#191919] rounded-md justify-between flex-row">
+      <TouchableOpacity 
+      style ={{ backgroundColor: card }}
+      className="px-5 py-3 mt-2 mx-5 rounded-md justify-between flex-row">
         <View>
-          <Text className="text-white font-semibold text-base">{name}</Text>
-          <Text className="text-gray-400 text-sm">
+          <Text style={{ color: text }} className=" font-semibold text-base">{name}</Text>
+          <Text style={{ color: subtitle }} className=" text-sm">
             {artists.map((a) => a.name).join(', ')} • {album.name}
           </Text>
         </View>

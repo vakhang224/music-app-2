@@ -1,12 +1,15 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react';
+import { View, Text } from 'react-native';
+import { ThemeContext } from '@/theme/ThemeContext';
 
-const library = () => {
+const Library = () => {
+  const { background, text } = useContext(ThemeContext);
+
   return (
-    <View>
-      <Text>library</Text>
+    <View style={{ flex: 1, backgroundColor: background, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ color: text, fontSize: 20 }}>Library</Text>
     </View>
-  )
-}
+  );
+};
 
-export default library
+export default Library;

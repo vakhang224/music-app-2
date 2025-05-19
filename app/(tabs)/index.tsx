@@ -8,6 +8,8 @@ import ArtistsCard from "@/components/ArtistsCard";
 import AlbumCard from "@/components/AlbumCard";
 import ArtistsAlbum from "@/components/ArtistsAlbum";
 import { StatusBar } from "expo-status-bar";
+import { ThemeContext } from '@/theme/ThemeContext';  // Import the ThemeContext
+import React, { useContext } from 'react';
 
 export default function Index() {
   // Gọi API để lấy danh sách nhiều nghệ sĩ dựa vào ID
@@ -28,8 +30,10 @@ export default function Index() {
   // Gọi API để lấy album của từng nghệ sĩ trong danh sách
   const { data: artistalbum, loading: artistalbumLoading, error: artistalbumError } = useFetch(() => fetchMultipleArtistsAlbums(artistIds));
 
+  const { background, text } = useContext(ThemeContext); // Consume the theme
+
   return (
-    <View className="flex-1 pb-14 bg-one">
+    <View style={{backgroundColor: background}} className="flex-1 pb-14">
       <StatusBar hidden={true} />
       <ScrollView className="flex-1">
 
@@ -37,7 +41,7 @@ export default function Index() {
         <View className="flex flex-row justify-between items-center h-16 mt-5">
           {/* Tiêu đề Trang chủ */}
           <View className="ml-5">
-            <Text className="text-3xl text-white">Trang chủ</Text>
+            <Text style={{color: text}} className="text-3xl">Trang chủ</Text>
           </View>
 
           {/* Biểu tượng Thông báo và Lịch sử */}
@@ -53,7 +57,7 @@ export default function Index() {
 
         {/* Section: Tác giả đề xuất */}
         <View>
-          <Text className="text-xl color-white ml-5 mt-5">Tác giả đề xuất</Text>
+          <Text style={{color: text}} className="text-xl ml-5 mt-5">Tác giả đề xuất</Text>
 
           {loading ? (
             // Trạng thái đang tải
@@ -84,7 +88,7 @@ export default function Index() {
 
         {/* Section: Album mới ra mắt */}
         <View>
-          <Text className="text-xl color-white ml-5 mt-5">Album mới ra mắt</Text>
+          <Text style={{color: text}} className="text-xl ml-5 mt-5">Album mới ra mắt</Text>
 
           {albumLoading ? (
             <ActivityIndicator size="large" color="white" className="mt-10 self-center" />
@@ -122,7 +126,7 @@ export default function Index() {
                     {/* Tên và avatar của nghệ sĩ */}
                     <View className="flex flex-row items-center">
                       <Image source={{ uri: artist?.images[0]?.url }} className="h-10 w-10 ml-5 rounded-full mt-5" />
-                      <Text className="text-xl color-white ml-3 mt-5">Album của {artistName}</Text>
+                      <Text style={{color: text}} className="text-xl ml-3 mt-5">Album của {artistName}</Text>
                     </View>
 
                     {/* Danh sách album theo chiều ngang */}
@@ -146,3 +150,4 @@ export default function Index() {
     </View>
   );
 }
+
