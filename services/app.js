@@ -3,8 +3,8 @@ var request = require('request');
 var querystring = require('querystring');
 var cors = require('cors');
 
-var client_id = 'b42cc2747e39432084ae1aee8268d3e9';
-var client_secret = '65236f599c06485185deb28fe3c58c2c';
+var client_id = '0a821d9156594cf1a836be5326ce7fb7';
+var client_secret = '72bd2a8f33e54486b27c977f236c2226';
 var redirect_uri = 'http://127.0.0.1:8888/callback';
 
 var app = express();
@@ -31,7 +31,7 @@ function generateRandomString(length) {
 
 app.get('/login', function (req, res) {
   var state = generateRandomString(16);
-  var scope = 'user-read-private user-read-email user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played';
+  var scope ='user-read-private user-read-email user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played user-top-read';
 
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
@@ -100,6 +100,31 @@ function refreshAccessTokenIfNeeded() {
   }
 }
 
+app.get('/api/top-artists', function(req, res) {
+  if (!access_token) {
+    return res.status(401).json({ error: 'No access token' });
+  }
+
+  var options = {
+    url: 'https://api.spotify.com/v1/me/top/artists?limit=30&time_range=medium_term',
+    headers: {
+      'Authorization': 'Bearer ' + access_token
+    },
+    json: true
+  };
+
+  request.get(options, function(error, response, body) {
+    if (error) {
+      return res.status(500).json({ error: 'Spotify API request error' });
+    }
+    if (response.statusCode !== 200) {
+      return res.status(response.statusCode).json({ error: body });
+    }
+
+    res.json(body);
+  });
+});
+
 function refreshAccessToken() {
   if (!refresh_token) {
     console.log("No refresh token available.");
@@ -108,8 +133,7 @@ function refreshAccessToken() {
 
   var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
-    headers: {
-      'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64'),
+    headers: {'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64'),
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     form: {
