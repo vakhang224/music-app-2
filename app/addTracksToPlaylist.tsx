@@ -21,7 +21,7 @@ const AddTracksToPlayList = () => {
   const [dataSelected, setDataSelected] = useState<string[]>([]);
   const { accessToken, refreshTokenIfNeeded } = useAuth();
   const {shouldReload, triggerReload } = usePlaylistStore();
-
+console.log(URL_API)
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, []);

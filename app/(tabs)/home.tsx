@@ -22,7 +22,7 @@ import ArtistsCard from "@/components/ArtistsCard";
 import AlbumCard from "@/components/AlbumCard";
 import ArtistsAlbum from "@/components/ArtistsAlbum";
 import { StatusBar } from "expo-status-bar";
-export default function Index() {
+export default function Home() {
   const { data, loading, error } = useFetch(() => fetchArtists({
     query: '2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6,5dfZ5uSmzR7VQK0udbAVpf,6mEQK9m2krja6X1cfsAjfl,1n9JKdEdLxrbgJiqz1WZFJ'
   }));
@@ -33,7 +33,6 @@ export default function Index() {
     "5dfZ5uSmzR7VQK0udbAVpf"
   ];
   const { data: artistalbum, loading: artistalbumLoading, error: artistalbumError } = useFetch(() => fetchMultipleArtistsAlbums(artistIds));
-  
   return (
     <View className="flex-1 pb-28 bg-black">
       <StatusBar hidden={true} />

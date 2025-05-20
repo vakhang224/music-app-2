@@ -1,27 +1,17 @@
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+
 import {
-  AntDesign,
-  FontAwesome,
-  FontAwesome6,
-  Fontisto,
-} from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
-import {
-  Button,
-  Image,
   ImageBackground,
   SafeAreaView,
   Text,
   View,
   TouchableOpacity,
-  ActivityIndicator,
-  ScrollView,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-
+import Config from 'react-native-config';
+import { URL_API } from '@env';
 export default function Index() {
-  
+  const apiUrl = Config.URL_API;
+  console.log(URL_API)
   return (
       <SafeAreaView style={{ flex: 1 }}>
         <ImageBackground

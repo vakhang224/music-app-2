@@ -10,7 +10,7 @@ import { searchArtists } from "@/services/api";
 import { Artist } from "@/interface/interfaces";
 import { useAuth } from "@/context/authProvide";
 import { ArtistsResponse } from "@/interface/databaseModel";
-import {URL_API} from "@env"
+import { URL_API } from "@env";
 const AddArtistsToPlayList = () => {
   const navigation = useNavigation();
   const [artistData, setArtistData] = useState<Artist[]>([]);
@@ -47,7 +47,6 @@ const AddArtistsToPlayList = () => {
 
   async function addArtists(){
     try{
-      console.log(URL_API)
       const response = await fetch(`${URL_API}/library/addartist`,{
         method:"POST",
         headers: {

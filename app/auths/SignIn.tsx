@@ -12,7 +12,7 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useAuth } from "@/context/authProvide";
 import { CheckEmail } from "../utils/checkEmail";
-import {URL_API} from "@env"
+import { URL_API } from "@env";
 
 const SignIn = () => {
   const { login } = useAuth();

@@ -13,7 +13,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { CheckEmail } from "../utils/checkEmail";
 import { isValidPassword } from "../utils/checkPassword";
-import {URL_API} from "@env"
+import { URL_API } from "@env";
 
 const SignUp = () => {
   const [seePassword, setSeePassword] = useState(true);

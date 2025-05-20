@@ -33,17 +33,17 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { MaterialIcons } from "@expo/vector-icons";
 import Foundation from "@expo/vector-icons/Foundation";
 import { Portal } from "@gorhom/portal";
-import { URL_API } from "@env";
 import { useAuth } from "@/context/authProvide";
 import { Playlist } from "@/interface/databaseModel";
 import { Track } from "@/interface/databaseModel";
 import { Track as TrackAPI } from "@/interface/interfaces";
 import { fetchTracks } from "@/services/api";
 import { usePlaylistStore } from "@/store/playlistStore";
+import { URL_API } from "@env";
 const PlayList = () => {
   const { id } = useLocalSearchParams();
   const navigation = useNavigation();
-  const [idTrack, setID] = useState<String | null>(null);
+  const [track, Settrack] = useState<TrackAPI>();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const bottomSheetRefPlayList = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["50%", "100%"], []);
@@ -55,9 +55,9 @@ const PlayList = () => {
     navigation.setOptions({ headerShown: false });
   }, []);
 
-  const handleSongInPlayList = (id: String) => {
+  const handleSongInPlayList = (track: Track) => {
     bottomSheetRef.current?.snapToIndex(1);
-    setID(id);
+    Settrack(track);
   };
 
   const handlePlaylist = () => {
@@ -248,14 +248,11 @@ useEffect(() => {
             </View>
 
             {/* List nhạc */}
-            <View className="w-full flex flex-col px-3 gap-6">
+            <View className="w-full flex flex-col px-3 gap-3">
              {dataTrackApi.map((item) => (
                 <SongCard
                   key={item.id}
-                  name={item.name}
-                  url={item.album.images[0].url}
-                  artist={item.artists}
-                  id={item.id}
+                  track={item}
                   onPress={handleSongInPlayList}
                 />
               ))}
@@ -302,7 +299,7 @@ useEffect(() => {
               <BottomSheetView className="flex flex-col gap-7">
                 <TouchableOpacity
                   onPress={() => {
-                    console.log("Hello");
+                    console.log(track)
                   }}
                   className="w-full"
                 >
@@ -316,7 +313,7 @@ useEffect(() => {
 
                 <TouchableOpacity
                   onPress={() => {
-                    console.log("Hello");
+                        console.log(track)
                   }}
                   className="w-full"
                 >
@@ -330,7 +327,11 @@ useEffect(() => {
 
                 <TouchableOpacity
                   onPress={() => {
-                    console.log("Hello");
+                    bottomSheetRef.current?.close()
+                    router.replace({
+                      pathname: "/artists/[id]",
+                      params: { id: track?.artists[0].id?.toString() ?? "" }
+                    })
                   }}
                   className="w-full"
                 >
@@ -348,7 +349,7 @@ useEffect(() => {
 
                 <TouchableOpacity
                   onPress={() => {
-                    console.log("Hello");
+                    console.log(track?.id)
                   }}
                   className="w-full"
                 >
@@ -362,7 +363,10 @@ useEffect(() => {
 
                 <TouchableOpacity
                   onPress={() => {
-                    console.log("Hello");
+                    router.replace({
+                      pathname: "/album/[id]",
+                      params: { id: track?.album.id?.toString() ?? "" }
+                    })
                   }}
                   className="w-full"
                 >
@@ -407,13 +411,13 @@ useEffect(() => {
               <BottomSheetView className="flex flex-row items-center w-full py-3 gap-3 border-b border-gray-400">
                 <Image
                   source={{
-                    uri: "https://i.scdn.co/image/ab6761610000e5ebbcb1c184c322688f10cdce7a",
+                    uri: track?.album.images[0].url,
                   }}
                   className="rounded-md w-16 h-16"
                 />
                 <BottomSheetView>
-                  <Text className="text-white font-bold">Name</Text>
-                  <Text className="text-gray-300">Artist</Text>
+                  <Text className="text-white font-bold">{track?.name}</Text>
+                  <Text className="text-gray-300">{track?.artists.join(",")}</Text>
                 </BottomSheetView>
               </BottomSheetView>
 

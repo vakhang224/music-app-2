@@ -1,16 +1,13 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import React, { useCallback, useMemo, useRef } from "react";
 import Feather from "@expo/vector-icons/Feather";
-import { Artist } from "@/interface/interfaces";
+import { Artist, Track } from "@/interface/interfaces";
 interface SongCardProps {
-  id: string;
-  name: string;
-  artist: Artist[];
-  url: string;
+  track:Track
   onPress:Function
 }
 
-const SongCard = ({ name, id, artist, url,onPress}: SongCardProps) => {
+const SongCard = ({ track,onPress}: SongCardProps) => {
   return (
     <View>
       <TouchableOpacity
@@ -20,14 +17,14 @@ const SongCard = ({ name, id, artist, url,onPress}: SongCardProps) => {
         className="flex flex-row items-center justify-between"
       >
         <View className="flex flex-row items-center gap-4 h-full">
-          <Image source={{ uri: url }} className="rounded-md w-16 h-16" />
+          <Image source={{ uri: track.album.images[0].url }} className="rounded-md w-16 h-16" />
           <View className="flex gap-2 h-16">
-            <Text className="text-white font-bold text-xl">{name}</Text>
-            <Text className="text-sm text-gray-400 font-bold">{artist.map(item=>item.name).join(", ")}</Text>
+            <Text className="text-white font-bold text-xl">{track.name}</Text>
+            <Text className="text-sm text-gray-400 font-bold">{track.artists.map(item=>item.name).join(", ")}</Text>
           </View>
         </View>
 
-        <TouchableOpacity onPress={()=>{onPress(id)}}>
+        <TouchableOpacity onPress={()=>{onPress(track)}}>
           <Feather name="more-vertical" size={20} color="white" />
         </TouchableOpacity>
       </TouchableOpacity>

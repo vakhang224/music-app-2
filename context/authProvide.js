@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
-import {URL_API} from "@env"
 
 const AuthContext = createContext();
 
@@ -63,7 +62,7 @@ useEffect(() => {
     if (expire.getTime() - now.getTime() >5*60*1000) return;
 
     try {
-      const response = await fetch(`${URL_API}/account/refresh`, {
+      const response = await fetch(`http://192.168.1.116:3000/account/refresh`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),

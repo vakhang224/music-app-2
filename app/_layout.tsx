@@ -25,6 +25,7 @@ export default function RootLayout() {
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="auths/SignIn" options={{headerShown:false}}/>
           <Stack.Screen name="auths/SignUp" options={{headerShown:false}}/>
+        
         </Stack>
 
         <MiniPlayer/>

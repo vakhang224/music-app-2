@@ -15,7 +15,6 @@ import {
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/authProvide";
-import { URL_API } from "@env";
 import { Artist, LibraryArtist, Playlist } from "@/interface/databaseModel";
 import BottomSheetPlaylist from "@/components/BottomSheetPlaylist";
 import { bottomSheetPlaylistRef } from "@/components/BottomSheetPlaylist";
@@ -29,6 +28,7 @@ import BottomSheetSort, {
 
 import { typeSort } from "@/interface/databaseModel";
 import { typeNumberColumn } from "@/interface/databaseModel";
+import { URL_API } from "@env";
 export default function library() {
   const { accessToken, refreshTokenIfNeeded } = useAuth();
   const [artistlibraryData, setArtistLibaryData] = useState<LibraryArtist[]>(
@@ -48,7 +48,8 @@ export default function library() {
   );
   const [selectN, setSelectN] = useState("");
 
-  const fetchLibrary = async () => {
+const fetchLibrary = async () => {
+  try {
     await refreshTokenIfNeeded();
     const res = await fetch(`${URL_API}/library`, {
       method: "GET",
@@ -57,17 +58,28 @@ export default function library() {
       },
     });
 
+    if (!res.ok) {
+      console.error("Failed to fetch library:", res.status, await res.text());
+      return;
+    }
+
     const data = await res.json();
+    console.log("Library data:", data);
+
     const artist = data.artist || [];
     const playlist = data.playlist || [];
+
     setArtistLibaryData(artist);
     setPlaylistData(
-      playlist?.map((item: Playlist) => ({
+      playlist.map((item: Playlist) => ({
         ...item,
         category: "playlist",
-      })) || []
+      }))
     );
-  };
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
+};
 
   async function handleFetchArtists() {
     try {
@@ -86,8 +98,12 @@ export default function library() {
   }
 
   useEffect(() => {
-    fetchLibrary();
-  }, []);
+    if(accessToken){
+              fetchLibrary();
+    console.log("Loading")
+    }
+
+  }, [accessToken]);
 
   useEffect(() => {
     handleFetchArtists();
@@ -95,6 +111,7 @@ export default function library() {
 
   useEffect(() => {
     setCurrentData([...playlistData, ...artistData]);
+    console.log(currentData)
   }, [playlistData, artistData]);
 
   function handlePlaylist(id: string) {
@@ -117,8 +134,7 @@ export default function library() {
   }
 
   useEffect(() => {
-    let sortedData = [...currentData]; // sao chép để không mutate state
-
+    let sortedData = [...currentData];
     switch (sortCurrent) {
       case typeSort.alphaSort:
         sortedData.sort((a, b) => {

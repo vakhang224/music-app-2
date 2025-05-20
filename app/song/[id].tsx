@@ -35,7 +35,6 @@ export default function MusicPlayerScreen() {
     };
   }, [isSeeking]);
 
-  // Cập nhật vị trí hiện tại và tổng thời lượng từ sound mỗi 500ms
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 

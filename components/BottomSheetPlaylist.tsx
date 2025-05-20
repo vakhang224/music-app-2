@@ -19,7 +19,6 @@ import {
 } from '@expo/vector-icons';
 import { Playlist } from '@/interface/databaseModel';
 import { View } from 'react-native';
-import {URL_API} from "@env"
 import { useAuth } from '@/context/authProvide';
 
 type Props = {
@@ -44,7 +43,7 @@ const BottomSheetPlaylist = forwardRef(({ data,onSuccess }: Props, ref) => {
 async function handleDeletePlaylist(id: string) {
   try {
 
-    const response = await fetch(`${URL_API}/playlist/${id}`, {
+    const response = await fetch(`http://192.168.1.116:3000/playlist/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

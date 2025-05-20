@@ -5,7 +5,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { FontAwesome, Fontisto } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "@/context/authProvide";
-import {URL_API} from "@env"
+import { URL_API } from "@env";
 const AddPlaylistToPLaylists = () => {
   const navigation = useNavigation();
   useEffect(() => {
