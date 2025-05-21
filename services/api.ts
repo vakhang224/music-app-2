@@ -1,6 +1,7 @@
 import { LibraryArtist } from "@/interface/databaseModel";
 import { AlbumTracks, Track } from "@/interface/interfaces";
-const API_BASE_URL = `http://192.168.1.116:8888`
+import { URL_TOKEN } from "@env";
+const API_BASE_URL = `${URL_TOKEN}`
 
 interface TokenResponse {
   accessToken?: string;

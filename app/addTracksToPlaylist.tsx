@@ -9,19 +9,20 @@ import { searchTracks } from "@/services/api";
 import { Artist, Track } from "@/interface/interfaces";
 import { useAuth } from "@/context/authProvide";
 import { URL_API } from "@env";
+import { Track as TrackAPI } from "@/interface/interfaces";
 
 
 import { usePlaylistStore } from "@/store/playlistStore";
 
 const AddTracksToPlayList = () => {
+  console.log(URL_API)
   const { id } = useLocalSearchParams();
   const navigation = useNavigation();
-  const [trackData, setTrackData] = useState<Track[]>([]);
+  const [trackData, setTrackData] = useState<TrackAPI[]>([]);
   const [searchQ, setSearchQ] = useState("");
-  const [dataSelected, setDataSelected] = useState<string[]>([]);
+  const [dataSelected, setDataSelected] = useState<TrackAPI[]>([]);
   const { accessToken, refreshTokenIfNeeded } = useAuth();
   const {shouldReload, triggerReload } = usePlaylistStore();
-console.log(URL_API)
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, []);
@@ -49,16 +50,16 @@ console.log(URL_API)
     return () => clearTimeout(handler);
   }, [searchQ]);
 
-  const toggleSelect = (trackId: string) => {
-    setDataSelected((prev) =>
-      prev.includes(trackId)
-        ? prev.filter((id) => id !== trackId)
-        : [...prev, trackId]
+  const toggleSelect = (track: TrackAPI) => {
+    setDataSelected((prev: TrackAPI[]) =>
+      prev.some((item: TrackAPI) => item.id === track.id)
+        ? prev.filter((item: TrackAPI) => item.id !== track.id)
+        : [...prev, track]
     );
   };
 
   const addTracks = async () => {
-    console.log(`${URL_API}/playlist/${id}/tracks`)
+    // console.log(`${URL_API}/playlist/${id}/tracks`)
     try {
       const response = await fetch(`${URL_API}/playlist/${id}/tracks`, {
         method: "POST",
@@ -66,16 +67,12 @@ console.log(URL_API)
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-     body: JSON.stringify({ ids: dataSelected }),
+     body: JSON.stringify({ tracks: dataSelected.map((item: TrackAPI) => ({ id: item.id, name: item.name })) }),
       });
 
       if (response.ok) {
         const data = await response.json();
         console.log("Added tracks:", data);
-        console.log(shouldReload)
-        triggerReload()
-        console.log(shouldReload)
-        console.log()
         router.replace(`/playlists/${id}`);
       } else {
         const error = await response.json().catch(() => ({}));
@@ -86,6 +83,7 @@ console.log(URL_API)
     } catch (err) {
       console.error("Fetch error:", err);
     }
+
 
   };
 
@@ -126,13 +124,13 @@ console.log(URL_API)
               keyExtractor={(item) => item.id}
               contentContainerStyle={{paddingBottom:200}}
               renderItem={({ item }) => {
-                const isSelected = dataSelected.includes(item.id);
+                const isSelected = dataSelected.some((it: TrackAPI) => it.id === item.id);
                 return (
                   <TouchableOpacity
                     className={`flex-row gap-4 w-[350px] mb-3 items-center rounded-lg ${
                       isSelected ? "bg-gray-700" : ""
                     }`}
-                    onPress={() => toggleSelect(item.id)}
+                    onPress={() => toggleSelect(item)}
                   >
                     <Image
                       source={{ uri: item.album.images[0].url }}

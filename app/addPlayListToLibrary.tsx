@@ -7,6 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "@/context/authProvide";
 import { URL_API } from "@env";
 const AddPlaylistToPLaylists = () => {
+  console.log(URL_API)
   const navigation = useNavigation();
   useEffect(() => {
     navigation.setOptions({ headerShown: false });

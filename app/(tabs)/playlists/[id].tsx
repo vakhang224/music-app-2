@@ -40,7 +40,10 @@ import { Track as TrackAPI } from "@/interface/interfaces";
 import { fetchTracks } from "@/services/api";
 import { usePlaylistStore } from "@/store/playlistStore";
 import { URL_API } from "@env";
+import { typeSort } from "@/interface/databaseModel";
+import BottomSheetSort, { bottomSheetSortRef } from "@/components/bottomSheetSort";
 const PlayList = () => {
+  console.log(URL_API)
   const { id } = useLocalSearchParams();
   const navigation = useNavigation();
   const [track, Settrack] = useState<TrackAPI>();
@@ -48,17 +51,27 @@ const PlayList = () => {
   const bottomSheetRefPlayList = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["50%", "100%"], []);
   const [dataPlaylist, setDataPlayList] = useState<Playlist>();
-  const [dataTrackDatabase, setDataTracksDatabase] = useState<Track[]>();
   const [dataTrackApi, setDataTrackApi] = useState<TrackAPI[]>([]);
+  const [dataTracksDatabase,setDataTrackDatabase] = useState<Track[]>([]);
   const { accessToken, refreshTokenIfNeeded } = useAuth();
+  const bottomSheetSortRef = useRef<bottomSheetSortRef>(null);
+  const [sortCurrent, setSortCurrent] = useState<typeSort>(typeSort.default);
+  
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, []);
-
-  const handleSongInPlayList = (track: Track) => {
+  const handleSongInPlayList = (track: TrackAPI) => {
+    Settrack(undefined);
     bottomSheetRef.current?.snapToIndex(1);
     Settrack(track);
   };
+
+  
+  function handleSort(typeSort: typeSort) {
+    setSortCurrent(typeSort);
+    bottomSheetSortRef.current?.close();
+  }
+
 
   const handlePlaylist = () => {
     bottomSheetRefPlayList.current?.snapToIndex(1);
@@ -66,15 +79,19 @@ const PlayList = () => {
 
   const { shouldReload, resetReload } = usePlaylistStore();
 
-useEffect(() => {
-  console.log(shouldReload)
-  if (shouldReload) {
-    handleTracksApi()
-    resetReload();      
-  }
-}, [shouldReload]);
+  useEffect(() => {
+    const reloadTracks = async () => {
+      if (shouldReload) {
+        await fetchDataTracks();
+        resetReload();
+      }
+    };
+    reloadTracks();
+  }, [shouldReload]);
 
   useEffect(() => {
+    setDataPlayList(undefined);
+    setDataTrackApi([]);
     const fetchDataPlaylist = async () => {
       await refreshTokenIfNeeded();
       try {
@@ -93,53 +110,97 @@ useEffect(() => {
     };
 
     fetchDataPlaylist();
-  }, [id]);
-
-  useEffect(() => {
-    const fetchDataTracks = async () => {
-      await refreshTokenIfNeeded();
-      try {
-        const response = await fetch(`${URL_API}/playlist/${id}/tracks/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const data = await response.json();
-        setDataTracksDatabase(data.data as Track[])
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
     fetchDataTracks();
   }, [id]);
 
-useEffect(() => {
-  if (dataTrackDatabase && dataTrackDatabase.length > 0) {
-    handleTracksApi();
-  }
-}, [dataTrackDatabase]);
+  const fetchDataTracks = async () => {
+    await refreshTokenIfNeeded();
+    try {
+      const response = await fetch(`${URL_API}/playlist/${id}/tracks/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const data = await response.json();
+      const dataTracksDatabase = data.data as Track[];
+      setDataTrackDatabase(dataTracksDatabase)
 
-  async function handleTracksApi(){
-
-    try{
-      if (dataTrackDatabase) {
-        const ids = dataTrackDatabase.map((item: Track) => item.Track_ID);
-        const data = await fetchTracks({ query: ids.join(",") });
-        setDataTrackApi(data.tracks)
-      }
-    }catch(err){
+      setDataTrackApi(await handleDataTrackAPI(dataTracksDatabase))
+    }
+    catch(err){
       console.error(err)
+    }
+  };
+
+async function handleDataTrackAPI(dt: Track[]): Promise<TrackAPI[]> {
+  try {
+    if (dt) {
+      const ids = dt.map((item: Track) => item.Track_ID);
+      const data = await fetchTracks({ query: ids.join(",") });
+      return data.tracks;
+    } else {
+      return [];
+    }
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
+
+  async function deleteHandleTrackApi(trackID: String) {
+    try {
+      const response = await fetch(`${URL_API}/playlist/${id}/tracks`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ ids: [trackID] }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw err;
+      }
+      const data = await response.json();
+      bottomSheetRef.current?.close();
+      await fetchDataTracks();
+    } catch (err) {
+      console.error("Error deleting tracks:", err);
     }
   }
 
+  
+  useEffect(() => {
+    let sortedData = [...dataTrackApi];
+    switch (sortCurrent) {
+      case typeSort.alphaSort:
+        sortedData.sort((a,b)=>a.name.localeCompare(b.name))
+        break;
+      case typeSort.dateSort:
+        (async () => {
+          await fetchDataTracks();
+          const sortDBTrack = dataTracksDatabase.sort((a, b) => new Date(a.Date_current).getTime() - new Date(b.Date_current).getTime())
+          const db = await handleDataTrackAPI(sortDBTrack);
+          setDataTrackApi(db);
+        })();
+        return; // Prevents setDataTrackApi(sortedData) below from running
+      case typeSort.default:
+      default:
+        break;
+    }
+    setDataTrackApi(sortedData)
+  }, [sortCurrent]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      key={Array.isArray(id) ? id[0] : id?.toString()}
+      style={{ flex: 1 }}
+    >
       <LinearGradient
-        colors={["#364769", "#1F2A42", "#111827"]}
+        colors={["#111827", "#1F2A42", "#111827"]}
         className="flex-1"
       >
         <ScrollView
@@ -150,7 +211,7 @@ useEffect(() => {
             <View className="bg-transparent w-full p-3 flex flex-row items-center gap-8">
               <TouchableOpacity
                 onPress={() => {
-                  router.replace("/library");
+                  router.push("/library");
                 }}
               >
                 <Ionicons name="arrow-back" size={24} color="white" />
@@ -228,7 +289,7 @@ useEffect(() => {
 
               <TouchableOpacity
                 onPress={() => {
-                  console.log("Press");
+                  bottomSheetSortRef.current?.open()
                 }}
                 className="bg-white flex flex-row justify-center items-center p-2 gap-2 rounded-full w-[30%]"
               >
@@ -249,13 +310,13 @@ useEffect(() => {
 
             {/* List nhạc */}
             <View className="w-full flex flex-col px-3 gap-3">
-             {dataTrackApi.map((item) => (
+              {dataTrackApi ? dataTrackApi.map((item) => (
                 <SongCard
                   key={item.id}
                   track={item}
                   onPress={handleSongInPlayList}
                 />
-              ))}
+              )) : <View><Text>Hãy thêm nhạc vào nào</Text></View>}
             </View>
           </View>
         </ScrollView>
@@ -273,6 +334,11 @@ useEffect(() => {
               height: 5,
               borderRadius: 3,
             }}
+            onChange={(index) => {
+              if (index === -1) {
+                Settrack(undefined);
+              }
+            }}
             backdropComponent={(props) => (
               <BottomSheetBackdrop
                 {...props}
@@ -286,20 +352,25 @@ useEffect(() => {
               <BottomSheetView className="flex flex-row items-center w-full py-3 gap-3 border-b border-gray-400">
                 <Image
                   source={{
-                    uri: "https://i.scdn.co/image/ab6761610000e5ebbcb1c184c322688f10cdce7a",
+                    uri: track?.album.images[0].url,
                   }}
                   className="rounded-md w-16 h-16"
                 />
                 <BottomSheetView>
-                  <Text className="text-white font-bold">Name</Text>
-                  <Text className="text-gray-300">Artist</Text>
+                  <Text className="text-white font-bold">{track?.name}</Text>
+                  <Text className="text-gray-300 w-[200px]" numberOfLines={1} >
+                    {track?.artists
+                      .map((item) => item.name)
+                      .join(",")
+                      .toString()}
+                  </Text>
                 </BottomSheetView>
               </BottomSheetView>
 
               <BottomSheetView className="flex flex-col gap-7">
                 <TouchableOpacity
                   onPress={() => {
-                    console.log(track)
+                    console.log("Hello");
                   }}
                   className="w-full"
                 >
@@ -313,7 +384,7 @@ useEffect(() => {
 
                 <TouchableOpacity
                   onPress={() => {
-                        console.log(track)
+                    deleteHandleTrackApi(track?.id?.toString() ?? "");
                   }}
                   className="w-full"
                 >
@@ -327,11 +398,11 @@ useEffect(() => {
 
                 <TouchableOpacity
                   onPress={() => {
-                    bottomSheetRef.current?.close()
+                    bottomSheetRef.current?.close();
                     router.replace({
                       pathname: "/artists/[id]",
-                      params: { id: track?.artists[0].id?.toString() ?? "" }
-                    })
+                      params: { id: track?.artists[0].id?.toString() ?? "" },
+                    });
                   }}
                   className="w-full"
                 >
@@ -349,7 +420,7 @@ useEffect(() => {
 
                 <TouchableOpacity
                   onPress={() => {
-                    console.log(track?.id)
+                    console.log("Hello");
                   }}
                   className="w-full"
                 >
@@ -365,8 +436,8 @@ useEffect(() => {
                   onPress={() => {
                     router.replace({
                       pathname: "/album/[id]",
-                      params: { id: track?.album.id?.toString() ?? "" }
-                    })
+                      params: { id: track?.album.id?.toString() ?? "" },
+                    });
                   }}
                   className="w-full"
                 >
@@ -410,21 +481,24 @@ useEffect(() => {
             <BottomSheetView className="flex items-center flex-col gap-4 px-10">
               <BottomSheetView className="flex flex-row items-center w-full py-3 gap-3 border-b border-gray-400">
                 <Image
-                  source={{
-                    uri: track?.album.images[0].url,
-                  }}
+                  source={require("@/assets/images/bg_bocchi.png")}
                   className="rounded-md w-16 h-16"
                 />
                 <BottomSheetView>
-                  <Text className="text-white font-bold">{track?.name}</Text>
-                  <Text className="text-gray-300">{track?.artists.join(",")}</Text>
+                  <Text className="text-white font-bold">
+                    {dataPlaylist?.Name_Playlist}
+                  </Text>
                 </BottomSheetView>
               </BottomSheetView>
 
               <BottomSheetView className="flex flex-col gap-7">
                 <TouchableOpacity
                   onPress={() => {
-                    console.log("Hello");
+                    bottomSheetRefPlayList.current?.close()
+                    router.push({
+                      pathname: "/addTracksToPlaylist",
+                      params: { id: dataPlaylist?.Playlist_ID?.toString() ?? "" }
+                    })
                   }}
                   className="w-full"
                 >
@@ -435,39 +509,6 @@ useEffect(() => {
                     </Text>
                   </BottomSheetView>
                 </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    console.log("Hello");
-                  }}
-                  className="w-full"
-                >
-                  <BottomSheetView className="flex flex-row gap-5 w-full items-center">
-                    <AntDesign name="delete" size={20} color="white" />
-                    <Text className="text-white flex-grow text-[15px]">
-                      Xóa danh sách phát
-                    </Text>
-                  </BottomSheetView>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    console.log("Hello");
-                  }}
-                  className="w-full"
-                >
-                  <BottomSheetView className="flex flex-row gap-5 w-full items-center">
-                    <Ionicons
-                      name="add-circle-outline"
-                      size={20}
-                      color="white"
-                    />
-                    <Text className="text-white flex-grow text-[15px]">
-                      Thêm danh sách này vào danh sách khác
-                    </Text>
-                  </BottomSheetView>
-                </TouchableOpacity>
-
                 <TouchableOpacity
                   onPress={() => {
                     console.log("Hello");
@@ -481,10 +522,25 @@ useEffect(() => {
                     </Text>
                   </BottomSheetView>
                 </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log("Hello");
+                  }}
+                  className="w-full"
+                >
+                  <BottomSheetView className="flex flex-row gap-5 w-full items-center">
+                    <AntDesign name="delete" size={20} color="white" />
+                    <Text className="text-white flex-grow text-[15px]">
+                      Xóa danh sách phát
+                    </Text>
+                  </BottomSheetView>
+                </TouchableOpacity>
               </BottomSheetView>
             </BottomSheetView>
           </BottomSheet>
         </Portal>
+
+        <BottomSheetSort ref={bottomSheetSortRef} onTypeSort={handleSort}/>
       </LinearGradient>
     </SafeAreaView>
   );

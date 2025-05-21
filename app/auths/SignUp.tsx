@@ -16,6 +16,7 @@ import { isValidPassword } from "../utils/checkPassword";
 import { URL_API } from "@env";
 
 const SignUp = () => {
+  console.log(URL_API)
   const [seePassword, setSeePassword] = useState(true);
   const [userName, setuserName] = useState("");
   const [email, setEmail] = useState("");

@@ -30,6 +30,7 @@ import { typeSort } from "@/interface/databaseModel";
 import { typeNumberColumn } from "@/interface/databaseModel";
 import { URL_API } from "@env";
 export default function library() {
+  console.log(URL_API)
   const { accessToken, refreshTokenIfNeeded } = useAuth();
   const [artistlibraryData, setArtistLibaryData] = useState<LibraryArtist[]>(
     []
@@ -251,7 +252,7 @@ const fetchLibrary = async () => {
   );
 
   return (
-    <SafeAreaView>
+    <SafeAreaView >
       <View className="w-full flex flex-col bg-gray-900 gap-3 p-4">
         <View className="flex flex-row justify-between">
           <Text className="text-white text-3xl font-bold">Thư viện</Text>

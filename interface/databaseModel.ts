@@ -12,7 +12,7 @@ export interface Playlist {
   Name_Playlist: string;       // Tên Playlist
   Owner_ID: string;            // ID người sở hữu Playlist
   Libary_ID?: string;     
-  category:string;     // ID của Thư viện (tuỳ chọn)
+  category:string;    // ID của Thư viện (tuỳ chọn)
 }
 
 export interface ArtistImage {
@@ -47,7 +47,8 @@ export interface Artist {
 
 export interface Track {
   Track_ID:string;
-  URL_Song:string
+  URL_Song:string;
+    Date_current:Date; 
 }
 
 export interface ArtistsResponse {

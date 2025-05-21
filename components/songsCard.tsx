@@ -19,8 +19,8 @@ const SongCard = ({ track,onPress}: SongCardProps) => {
         <View className="flex flex-row items-center gap-4 h-full">
           <Image source={{ uri: track.album.images[0].url }} className="rounded-md w-16 h-16" />
           <View className="flex gap-2 h-16">
-            <Text className="text-white font-bold text-xl">{track.name}</Text>
-            <Text className="text-sm text-gray-400 font-bold">{track.artists.map(item=>item.name).join(", ")}</Text>
+            <Text className="text-white font-bold text-xl w-[200px]" numberOfLines={1} ellipsizeMode="tail">{track.name}</Text>
+            <Text className="text-sm text-gray-400 font-bold w-[200px]" numberOfLines={1}>{track.artists.map(item=>item.name).join(", ")}</Text>
           </View>
         </View>
 

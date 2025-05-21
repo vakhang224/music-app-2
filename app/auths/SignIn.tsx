@@ -15,6 +15,7 @@ import { CheckEmail } from "../utils/checkEmail";
 import { URL_API } from "@env";
 
 const SignIn = () => {
+  console.log(URL_API)
   const { login } = useAuth();
   const [hidePassword, setHidePassword] = useState(true);
   const [emailOrUsername, setEmailOrUsername] = useState("");
