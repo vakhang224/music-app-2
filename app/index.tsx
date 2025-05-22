@@ -7,10 +7,8 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import Config from 'react-native-config';
-import { URL_API } from '@env';
 export default function Index() {
-  const apiUrl = Config.URL_API;
+  const URL_API = process.env.EXPO_PUBLIC_URL_API
   console.log(URL_API)
   return (
       <SafeAreaView style={{ flex: 1 }}>

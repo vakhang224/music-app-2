@@ -1,18 +1,20 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import React, { useCallback, useMemo, useRef } from "react";
 import Feather from "@expo/vector-icons/Feather";
-import { Artist, Track } from "@/interface/interfaces";
+import { Artist, Track as TrackAPI } from "@/interface/interfaces";
+import { router } from "expo-router";
 interface SongCardProps {
-  track:Track
+  track:TrackAPI
   onPress:Function
+  playlist:TrackAPI[]
 }
 
-const SongCard = ({ track,onPress}: SongCardProps) => {
+const SongCard = ({ track,onPress,playlist}: SongCardProps) => {
   return (
     <View>
       <TouchableOpacity
         onPress={() => {
-          console.log("info Artist");
+          router.push({ pathname: "/song/[id]", params:{ id: track.id,track:JSON.stringify(track),playlist:JSON.stringify(playlist)}});
         }}
         className="flex flex-row items-center justify-between"
       >

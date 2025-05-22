@@ -13,9 +13,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { CheckEmail } from "../utils/checkEmail";
 import { isValidPassword } from "../utils/checkPassword";
-import { URL_API } from "@env";
 
 const SignUp = () => {
+  const URL_API = process.env.EXPO_PUBLIC_URL_API
   console.log(URL_API)
   const [seePassword, setSeePassword] = useState(true);
   const [userName, setuserName] = useState("");

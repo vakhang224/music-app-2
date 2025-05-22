@@ -8,13 +8,13 @@ import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { searchTracks } from "@/services/api";
 import { Artist, Track } from "@/interface/interfaces";
 import { useAuth } from "@/context/authProvide";
-import { URL_API } from "@env";
 import { Track as TrackAPI } from "@/interface/interfaces";
 
 
 import { usePlaylistStore } from "@/store/playlistStore";
 
 const AddTracksToPlayList = () => {
+  const URL_API = process.env.EXPO_PUBLIC_URL_API
   console.log(URL_API)
   const { id } = useLocalSearchParams();
   const navigation = useNavigation();

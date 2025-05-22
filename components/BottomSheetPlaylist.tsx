@@ -32,6 +32,8 @@ export type bottomSheetPlaylistRef = {
 }
 
 const BottomSheetPlaylist = forwardRef(({ data,onSuccess }: Props, ref) => {
+    const URL_API = process.env.URL_API
+  console.log(URL_API)
   const { accessToken, refreshTokenIfNeeded } = useAuth();
   const snapPoints = useMemo(() => ['50%', '100%'], []);
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -43,7 +45,7 @@ const BottomSheetPlaylist = forwardRef(({ data,onSuccess }: Props, ref) => {
 async function handleDeletePlaylist(id: string) {
   try {
 
-    const response = await fetch(`http://192.168.1.116:3000/playlist/${id}`, {
+    const response = await fetch(`${URL_API}/playlist/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

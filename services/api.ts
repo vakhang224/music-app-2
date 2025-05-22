@@ -1,7 +1,7 @@
 import { LibraryArtist } from "@/interface/databaseModel";
 import { AlbumTracks, Track } from "@/interface/interfaces";
-import { URL_TOKEN } from "@env";
-const API_BASE_URL = `${URL_TOKEN}`
+  const API_BASE_URL = process.env.EXPO_PUBLIC_URL_TOKEN
+  console.log(API_BASE_URL)
 
 interface TokenResponse {
   accessToken?: string;

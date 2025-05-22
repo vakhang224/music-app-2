@@ -28,8 +28,8 @@ import BottomSheetSort, {
 
 import { typeSort } from "@/interface/databaseModel";
 import { typeNumberColumn } from "@/interface/databaseModel";
-import { URL_API } from "@env";
 export default function library() {
+  const URL_API = process.env.EXPO_PUBLIC_URL_API
   console.log(URL_API)
   const { accessToken, refreshTokenIfNeeded } = useAuth();
   const [artistlibraryData, setArtistLibaryData] = useState<LibraryArtist[]>(

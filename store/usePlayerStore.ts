@@ -1,25 +1,32 @@
-// Tạo store với Zustand để quản lý trạng thái phát nhạc
 import { create } from 'zustand';
-import { Audio } from 'expo-av';
-import localTracks from '@/assets/songs/localTracks';
+import { Audio, InterruptionModeIOS, InterruptionModeAndroid } from 'expo-av';
+import { Track as TrackAPI } from '@/interface/interfaces';
+import { fetchTracks } from '@/services/api';
+const API_URL = process.env.EXPO_PUBLIC_URL_API;
+
 
 interface PlayerState {
-  currentTrackId: string | null; // ID bài hát hiện tại
-  currentTrackMeta: any | null;  // Metadata bài hiện tại (tên, nghệ sĩ, ảnh...)
-  isPlaying: boolean;            // Có đang phát nhạc không
-  sound: Audio.Sound | null;     // Đối tượng âm thanh đang phát
-  position: number;              // Vị trí hiện tại trong bài (ms)
-  duration: number;              // Tổng thời gian bài (ms)
+  currentTrackId: string | null;
+  currentTrackMeta: TrackAPI | null;
+  isPlaying: boolean;
+  sound: Audio.Sound | null;
+  position: number;
+  duration: number;
+  trackAPI:TrackAPI|null;
+  isSeeking:boolean
 
-  // Các hàm điều khiển nhạc
-  play: (id: string) => Promise<void>;
+  play: (id: string,track:TrackAPI) => Promise<void>;
   pause: () => Promise<void>;
   resume: () => Promise<void>;
-  playNext: (albumTracks: any[]) => Promise<void>;
-  playPrev: (albumTracks: any[]) => Promise<void>;
+  playNext: () => Promise<void>;
+  seekTo: (positionMillis: number) => Promise<void>;
+  playPrev: () => Promise<void>;
+  setIsSeeking:(isSeeking:boolean)=>Promise<void>;
+  playlist: TrackAPI[],
+setPlayList: (tracks: TrackAPI[]) => void;
+
 }
 
-// Tạo Zustand store
 export const usePlayerStore = create<PlayerState>((set, get) => ({
   currentTrackId: null,
   currentTrackMeta: null,
@@ -27,55 +34,100 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   sound: null,
   position: 0,
   duration: 0,
+  trackAPI: null,
+  isSeeking: false,playlist: [],
+setPlayList: (tracks) => set({ playlist: tracks }),
 
-  // Phát một bài hát mới theo ID
-  play: async (id: string) => {
-    const { sound: oldSound } = get();
+  setIsSeeking: async (isSeeking: boolean) => {
+    set({ isSeeking });
+  },
 
-    // Nếu có bài đang phát trước đó thì dừng lại
-    if (oldSound) await oldSound.unloadAsync();
+  seekTo: async (positionMillis: number) => {
+  const { sound } = get();
+  if (sound) {
+    await sound.setPositionAsync(positionMillis);
+    set({ position: positionMillis });
+  }
+},
 
-    // Reset trạng thái về mặc định trước khi phát bài mới
-    set({
-      currentTrackId: id,
-      currentTrackMeta: null,
-      sound: null,
-      isPlaying: false,
-      position: 0,
-      duration: 0,
-    });
+play: async (id: string, track: TrackAPI) => {
+  const { sound: oldSound, currentTrackId } = get();
 
-    // Tìm file nhạc local theo ID
-    const track = localTracks.find(t => t.id === id);
-    if (!track) {
-      console.log('🚫 Không có file nhạc local cho:', id);
-      return;
+  if (id === currentTrackId) {
+    console.log("⏭ Bài hát hiện tại đang phát rồi, không cần phát lại");
+    return;
+  }
+
+  if (oldSound) {
+    try {
+      await oldSound.unloadAsync();
+    } catch (e) {
+      console.warn("⚠️ Lỗi khi dừng âm thanh cũ:", e);
     }
+  }
 
-    // Load và phát nhạc bằng expo-av
-    const { sound, status } = await Audio.Sound.createAsync(track.url, { shouldPlay: true });
+  set({
+    currentTrackId: id,
+    currentTrackMeta: null,
+    sound: null,
+    isPlaying: false,
+    position: 0,
+    duration: 0,
+    trackAPI: track,
+  });
 
-    // Theo dõi trạng thái phát nhạc liên tục
-    sound.setOnPlaybackStatusUpdate(status => {
-      if (!status.isLoaded) return;
-      set({
-        position: status.positionMillis,
-        duration: status.durationMillis || 0,
-        isPlaying: status.isPlaying,
-      });
+  try {
+    const url = `${API_URL}/api/song/${id}`;
+
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      staysActiveInBackground: true,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      playThroughEarpieceAndroid: false,
     });
 
-    // Lưu lại thông tin vào store
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: url },
+      { shouldPlay: false }
+    );
+
+    sound.setOnPlaybackStatusUpdate((status) => {
+      if (status.isLoaded) {
+        set({
+          position: status.positionMillis,
+          duration: status.durationMillis || 0,
+          isPlaying: status.isPlaying,
+        });
+      } else {
+        set({
+          position: 0,
+          duration: 0,
+          isPlaying: false,
+        });
+      }
+    });
+
+    await sound.playAsync(); // Phát sau khi preload
+
+    const fakeMeta: TrackAPI = {
+      ...track,
+      name: `Bài hát ${track.name}`,
+    };
+
     set({
       sound,
-      currentTrackMeta: track,
+      currentTrackMeta: fakeMeta,
       isPlaying: true,
     });
 
-    console.log('▶️ Đang phát:', track.id);
-  },
+    console.log('▶️ Đang phát từ backend:', fakeMeta.name);
+  } catch (error) {
+    console.error('🚨 Lỗi phát nhạc:', error);
+  }
+},
 
-  // Tạm dừng phát nhạc
+
   pause: async () => {
     const { sound } = get();
     if (sound) {
@@ -84,7 +136,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
   },
 
-  // Tiếp tục phát nhạc
   resume: async () => {
     const { sound } = get();
     if (sound) {
@@ -93,29 +144,23 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
   },
 
-  // Phát bài kế tiếp trong danh sách album
-  playNext: async (albumTracks: any[]) => {
-    const { currentTrackId, play } = get();
-    const idx = albumTracks.findIndex(t => t.id === currentTrackId);
-    const nextTrack = albumTracks[idx + 1];
-    if (nextTrack) {
-      console.log('⏭ Qua bài:', nextTrack.name);
-      await play(nextTrack.id);
-    } else {
-      console.log('⛔️ Không có bài tiếp theo');
-    }
-  },
+playNext: async () => {
+  const { currentTrackId, playlist, play } = get();
+  const idx = playlist.findIndex(t => t.id === currentTrackId);
+  const nextTrack = playlist[idx + 1];
+  if (nextTrack) {
+    await play(nextTrack.id, nextTrack);
+  }
+},
 
-  // Phát bài trước đó trong danh sách album
-  playPrev: async (albumTracks: any[]) => {
-    const { currentTrackId, play } = get();
-    const idx = albumTracks.findIndex(t => t.id === currentTrackId);
-    const prevTrack = albumTracks[idx - 1];
-    if (prevTrack) {
-      console.log('⏮ Quay lại bài:', prevTrack.name);
-      await play(prevTrack.id);
-    } else {
-      console.log('⛔️ Không có bài trước');
-    }
-  },
+playPrev: async () => {
+  const { currentTrackId, playlist, play } = get();
+  const idx = playlist.findIndex(t => t.id === currentTrackId);
+  const prevTrack = playlist[idx - 1];
+  if (prevTrack) {
+    await play(prevTrack.id, prevTrack);
+  }
+},
+
+
 }));

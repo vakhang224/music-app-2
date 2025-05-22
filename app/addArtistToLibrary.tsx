@@ -10,8 +10,9 @@ import { searchArtists } from "@/services/api";
 import { Artist } from "@/interface/interfaces";
 import { useAuth } from "@/context/authProvide";
 import { ArtistsResponse } from "@/interface/databaseModel";
-import { URL_API } from "@env";
 const AddArtistsToPlayList = () => {
+  const URL_API = process.env.EXPO_PUBLIC_URL_API
+  console.log(URL_API)
   const navigation = useNavigation();
   const [artistData, setArtistData] = useState<Artist[]>([]);
   const [searchQ, setSearchQ] = useState("");

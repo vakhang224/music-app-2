@@ -39,11 +39,10 @@ import { Track } from "@/interface/databaseModel";
 import { Track as TrackAPI } from "@/interface/interfaces";
 import { fetchTracks } from "@/services/api";
 import { usePlaylistStore } from "@/store/playlistStore";
-import { URL_API } from "@env";
 import { typeSort } from "@/interface/databaseModel";
 import BottomSheetSort, { bottomSheetSortRef } from "@/components/bottomSheetSort";
 const PlayList = () => {
-  console.log(URL_API)
+  const URL_API = process.env.EXPO_PUBLIC_URL_API
   const { id } = useLocalSearchParams();
   const navigation = useNavigation();
   const [track, Settrack] = useState<TrackAPI>();
@@ -194,6 +193,14 @@ async function handleDataTrackAPI(dt: Track[]): Promise<TrackAPI[]> {
     setDataTrackApi(sortedData)
   }, [sortCurrent]);
 
+
+  // function handlePlayMusic(){
+  //   if(dataTrackApi){
+  //     setPlayList(dataTrackApi)
+  //      router.push({ pathname: "/song/[id]", params:{ id: dataTrackApi[0].id,track:JSON.stringify(dataTrackApi[0])}});
+  //   } 
+  // }
+
   return (
     <SafeAreaView
       key={Array.isArray(id) ? id[0] : id?.toString()}
@@ -256,14 +263,15 @@ async function handleDataTrackAPI(dt: Track[]): Promise<TrackAPI[]> {
                     className="rounded-full w-10 h-10"
                   />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handlePlaylist}>
+                <TouchableOpacity onPress={()=>{}}>
                   <Feather name="more-vertical" size={24} color="white" />
                 </TouchableOpacity>
               </View>
 
               <TouchableOpacity
                 onPress={() => {
-                  console.log("press");
+                  
+                  // handlePlayMusic()
                 }}
               >
                 <View className="bg-white block rounded-full p-4">
@@ -315,6 +323,7 @@ async function handleDataTrackAPI(dt: Track[]): Promise<TrackAPI[]> {
                   key={item.id}
                   track={item}
                   onPress={handleSongInPlayList}
+                  playlist={dataTrackApi??[]}
                 />
               )) : <View><Text>Hãy thêm nhạc vào nào</Text></View>}
             </View>
@@ -420,7 +429,10 @@ async function handleDataTrackAPI(dt: Track[]): Promise<TrackAPI[]> {
 
                 <TouchableOpacity
                   onPress={() => {
-                    console.log("Hello");
+                    if (track) {
+                      bottomSheetRef.current?.close
+                      router.push({ pathname: "/song/[id]", params:{ id: track.id,track:JSON.stringify(track)}});
+                    }
                   }}
                   className="w-full"
                 >

@@ -12,9 +12,9 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useAuth } from "@/context/authProvide";
 import { CheckEmail } from "../utils/checkEmail";
-import { URL_API } from "@env";
 
 const SignIn = () => {
+  const URL_API = process.env.EXPO_PUBLIC_URL_API
   console.log(URL_API)
   const { login } = useAuth();
   const [hidePassword, setHidePassword] = useState(true);
