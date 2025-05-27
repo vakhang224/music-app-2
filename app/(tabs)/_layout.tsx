@@ -17,7 +17,7 @@ const _layout = () => {
 
     <Tabs>
         <Tabs.Screen
-            name="index"
+            name="home"
             options={{
                 headerShown:false,
                 tabBarShowLabel: false,
@@ -174,6 +174,31 @@ const _layout = () => {
 
             }}
         />
+
+
+       
+
+        <Tabs.Screen
+            name="playlists/[id]"
+            options={{
+                headerShown: false, // Ẩn header
+                tabBarShowLabel: false, // Ẩn nhãn tab
+                href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
+                tabBarStyle: {
+                    height: 60,
+                    marginTop: -100,
+                    marginBottom: 0,
+                    backgroundColor: 'black',
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0,
+                    shadowOpacity: 0,
+                    elevation: 0,
+                },
+
+            }}/>
+
+
+
         <Tabs.Screen
             name="artists/[id]"
             options={{
@@ -191,9 +216,12 @@ const _layout = () => {
                     elevation: 0,
                 },
 
-            }}
-        />
+            }}/>
+
+   
     </Tabs>
+    
+    
     </>
   )
 }

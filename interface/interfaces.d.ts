@@ -15,10 +15,10 @@ export interface ExternalUrl {
     uri: string;
     href: string;
     external_urls: ExternalUrl;
-    images?: Image[]; // optional - chỉ dùng khi fetch nghệ sĩ riêng
+    images?:Image[]
   }
   
-  interface Album {
+ export interface Album {
     id: string;
     name: string;
     type: string;
@@ -35,7 +35,7 @@ export interface ExternalUrl {
     restrictions?: { reason: string };
   }
   
-  interface Track {
+ export interface Track {
     id: string;
     name: string;
     type: string;
