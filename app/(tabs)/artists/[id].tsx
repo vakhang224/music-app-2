@@ -1,6 +1,6 @@
 import { View, Text, Image, ActivityIndicator, FlatList, Touchable, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { Link, useLocalSearchParams } from 'expo-router';
 import { ScrollView } from 'react-native';
 
 import useFetch from '@/services/useFetch';
@@ -15,23 +15,27 @@ const formatDuration = (ms: number) => {
   return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 };
 
+import { usePlayerStore } from '@/store/usePlayerStore';
+
 const TopTracks = ({ tracks }: { tracks: Track[] }) => {
+  const { play } = usePlayerStore();
+
   return (
     <FlatList
       scrollEnabled={false}
       data={tracks}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
-        <View className="flex-row items-stretch mt-2 mx-5">
-          {/* Ảnh có chiều cao = chiều cao của phần bg */}
+        <TouchableOpacity
+          onPress={() => play(item.id)}
+          className="flex-row items-stretch mt-2 mx-5"
+        >
           <Image
             source={{ uri: item.album.images[0].url }}
-            className="w-20 h-20 rounded-md mr-1 "
+            className="w-20 h-20 rounded-md mr-1"
             resizeMode="cover"
           />
-
-          {/* Nền xám */}
-          <TouchableOpacity className="flex-1 bg-[#191919] px-4 py-3 rounded-md justify-center">
+          <View className="flex-1 bg-[#191919] px-4 py-3 rounded-md justify-center">
             <View className="flex-row justify-between items-center">
               <View className="flex-1 pr-2">
                 <Text className="text-white font-semibold" numberOfLines={1}>
@@ -45,9 +49,8 @@ const TopTracks = ({ tracks }: { tracks: Track[] }) => {
                 {formatDuration(item.duration_ms)}
               </Text>
             </View>
-          </TouchableOpacity>
-        </View>
-
+          </View>
+        </TouchableOpacity>
       )}
     />
   );
@@ -85,7 +88,7 @@ const ArtistDetail = () => {
   // Fetch playlists by searching artist name
 
   return (
-    <View className="bg-black flex-1 pb-28">
+    <View className="bg-black flex-1 pb-20">
       <ScrollView>
         <View className=" pb-5">
           {artistLoading && (
@@ -142,6 +145,7 @@ const ArtistDetail = () => {
             </View>
           )}
         </View>
+        <View className="p-12"/>
       </ScrollView>
     </View>
   );

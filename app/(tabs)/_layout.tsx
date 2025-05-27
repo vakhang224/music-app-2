@@ -8,6 +8,9 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { ThemeProvider, ThemeContext } from '@/theme/ThemeContext'
 import { ProfileProvider } from '@/components/ProfileContext'
+import { StyleSheet } from 'react-native';
+
+import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
 const TabsLayout = () => {
   const { isDarkMode } = useContext(ThemeContext)
@@ -17,7 +20,7 @@ const TabsLayout = () => {
   return (
     <Tabs>
         <Tabs.Screen
-            name="index"
+            name="home"
             options={{
                 headerShown:false,
                 tabBarShowLabel: false,
@@ -27,7 +30,7 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -64,7 +67,7 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -100,7 +103,7 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -136,7 +139,7 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -161,27 +164,9 @@ const TabsLayout = () => {
                     </Text>
                   </View>
                 ),
-                
             }}
         />
-        <Tabs.Screen
-            name="song/[id]"
-            options={{
-                headerShown: false, // Ẩn header
-                tabBarShowLabel: false, // Ẩn nhãn tab
-                href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
-                tabBarStyle: {
-                    height: 60,
-                    marginTop: -100,
-                    marginBottom: 0,
-                    backgroundColor: 'transparent',
-                    borderTopWidth: 0,
-                    borderBottomWidth: 0,
-                    shadowOpacity: 0,
-                    elevation: 0,
-                },
-              }}
-        />
+    
         <Tabs.Screen
             name="album/[id]"
             options={{
@@ -192,22 +177,40 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
                     elevation: 0,
                 },
-                tabBarBackground:() => (
-                    <LinearGradient
-                    colors={['rgba(0, 0, 0, 1)', 'rgba(255, 174, 0, 0)']}
-                    start={{ x: 0, y: 1 }} // 0deg in CSS starts from bottom
-                    end={{ x: 0, y: 0 }}   // and goes to top
-                    style={{flex: 1}}
-                    />
-                ),
+
             }}
         />
+
+
+       
+
+        <Tabs.Screen
+            name="playlists/[id]"
+            options={{
+                headerShown: false, // Ẩn header
+                tabBarShowLabel: false, // Ẩn nhãn tab
+                href: null, // Nếu không muốn sử dụng đường dẫn, có thể giữ nguyên hoặc sửa lại
+                tabBarStyle: {
+                    height: 60,
+                    marginTop: -100,
+                    marginBottom: 0,
+                    backgroundColor: 'black',
+                    borderTopWidth: 0,
+                    borderBottomWidth: 0,
+                    shadowOpacity: 0,
+                    elevation: 0,
+                },
+
+            }}/>
+
+
+
         <Tabs.Screen
             name="artists/[id]"
             options={{
@@ -218,7 +221,7 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'black',
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,

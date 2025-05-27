@@ -7,6 +7,8 @@ import useFetch from '@/services/useFetch';
 import Foundation from '@expo/vector-icons/Foundation';
 import { StatusBar } from 'expo-status-bar';
 import { Track } from '@/interface/interfaces';
+import { Link } from 'expo-router';
+import { usePlayerStore } from '@/store/usePlayerStore';
 
 // Định nghĩa kiểu dữ liệu cho một track riêng lẻ từ AlbumTracks
 
@@ -23,20 +25,24 @@ const formatDuration = (ms: number) => {
 };
 
 // Component hiển thị danh sách các bài hát trong album
+
 const Tracks = ({ tracks }: Props) => {
+  const { play } = usePlayerStore();
+
   return (
     <FlatList
-      scrollEnabled={false} // Vô hiệu hóa scroll vì nằm trong ScrollView cha
+      scrollEnabled={false}
       data={tracks}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
-        <TouchableOpacity className="px-5 py-3 mt-2 mx-5 bg-[#191919] rounded-md justify-between flex-row">
-          {/* Hiển thị tên bài hát và nghệ sĩ */}
+        <TouchableOpacity
+          onPress={() => play(item.id)}
+          className="px-5 py-3 mt-2 mx-5 bg-[#191919] rounded-md justify-between flex-row"
+        >
           <View>
             <Text className="text-white">{item.name}</Text>
             <Text className="text-white">{item.artists[0].name}</Text>
           </View>
-          {/* Hiển thị thời lượng bài hát */}
           <View>
             <Text className="text-white">{formatDuration(item.duration_ms)}</Text>
           </View>
