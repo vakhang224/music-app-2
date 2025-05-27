@@ -1,6 +1,6 @@
 import { AlbumTracks, Track } from "@/interface/interfaces";
 
-const API_BASE_URL = "http://192.168.90.244:8888"
+const API_BASE_URL = "http://10.17.184.76:8888"
 
 // Rest of your code remains the same
 interface TokenResponse {

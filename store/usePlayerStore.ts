@@ -48,7 +48,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     // Tìm file nhạc local theo ID
     const track = localTracks.find(t => t.id === id);
     if (!track) {
-      console.log('🚫 Không có file nhạc local cho:', id);
+      console.log('Không có file nhạc local cho:', id);
       return;
     }
 
@@ -72,7 +72,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       isPlaying: true,
     });
 
-    console.log('▶️ Đang phát:', track.id);
+    console.log('Đang phát:', track.id);
   },
 
   // Tạm dừng phát nhạc
@@ -102,7 +102,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       console.log('⏭ Qua bài:', nextTrack.name);
       await play(nextTrack.id);
     } else {
-      console.log('⛔️ Không có bài tiếp theo');
+      console.log(' Không có bài tiếp theo');
     }
   },
 
@@ -115,7 +115,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       console.log('⏮ Quay lại bài:', prevTrack.name);
       await play(prevTrack.id);
     } else {
-      console.log('⛔️ Không có bài trước');
+      console.log(' Không có bài trước');
     }
   },
 }));

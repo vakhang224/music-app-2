@@ -52,6 +52,7 @@ const TopTracks = ({ tracks }: { tracks: Track[] }) => {
           </View>
         </TouchableOpacity>
       )}
+      inverted
     />
   );
 };
