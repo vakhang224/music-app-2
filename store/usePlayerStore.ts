@@ -54,7 +54,7 @@ play: async (id: string, track: TrackAPI) => {
   const { sound: oldSound, currentTrackId } = get();
 
   if (id === currentTrackId) {
-    console.log("⏭ Bài hát hiện tại đang phát rồi, không cần phát lại");
+    console.log(" Bài hát hiện tại đang phát rồi, không cần phát lại");
     return;
   }
 
@@ -62,7 +62,7 @@ play: async (id: string, track: TrackAPI) => {
     try {
       await oldSound.unloadAsync();
     } catch (e) {
-      console.warn("⚠️ Lỗi khi dừng âm thanh cũ:", e);
+      console.warn("Lỗi khi dừng âm thanh cũ:", e);
     }
   }
 
@@ -121,9 +121,9 @@ play: async (id: string, track: TrackAPI) => {
       isPlaying: true,
     });
 
-    console.log('▶️ Đang phát từ backend:', fakeMeta.name);
+    console.log(' Đang phát từ backend:', fakeMeta.name);
   } catch (error) {
-    console.error('🚨 Lỗi phát nhạc:', error);
+    console.error(' Lỗi phát nhạc:', error);
   }
 },
 

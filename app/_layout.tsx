@@ -3,6 +3,14 @@ import { Stack } from "expo-router";
 import { ProfileProvider } from '@/components/ProfileContext';
 import { ThemeProvider, ThemeContext } from '@/theme/ThemeContext';
 import React, { useContext } from 'react';
+import { AuthProvider, useAuth } from "@/context/authProvide";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import MusicBar from "@/components/musicBar";
+import { View } from "react-native";
+import { PortalProvider } from "@gorhom/portal";
+import MiniPlayer from "@/components/MiniPlayer";
+import { useEffect } from "react";
+export default function RootLayout() {
 
 // ✅ Component con nằm bên trong ThemeProvider => dùng context an toàn
 const AppLayout = () => {

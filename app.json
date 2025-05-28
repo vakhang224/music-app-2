@@ -38,7 +38,13 @@
       "typedRoutes": true
     },
     "extra": {
-      "EXPO_PUBLIC_API_URL": "http://127.0.0.1:8888"
+      "EXPO_PUBLIC_API_URL": "http://127.0.0.1:8888",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b869455c-689d-4e97-84b3-8fefce1ba365"
+      }
     }
   }
 }
