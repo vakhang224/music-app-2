@@ -65,9 +65,12 @@ router.post("/login", async (req, res) => {
       User_ID: user.User_ID,
       Account_ID: user.Account_ID,
       Name_User: user.Name_User,
-      Country: user.Country
+      Country: user.Country,
+      Type_UserID: user.Type_UserID,
+      Email: result.rows[0].Email,
     };
 
+    console.log("Đăng nhập thành công:", userData);
     const accessToken = jwt.sign(
       { accountID, userID: user.User_ID },
       process.env.JWT_SECRET,
@@ -81,7 +84,7 @@ router.post("/login", async (req, res) => {
     );
 
     const expireDate = new Date(Date.now() + 30 * 60 * 1000).toISOString();
-
+    console.log(userData)
     return res.status(200).json({
       message: 'Đăng nhập thành công',
       accessToken,
@@ -193,26 +196,53 @@ router.post('/SignUp', async (req, res) => {
   }
 });
 
+
 router.put("/:id", async (req, res) => {
-  const id = decodeURIComponent(req.params.id);
-  const { email, newPassword, currentPassword,userName} = req.body;
+  const id = decodeURIComponent(req.params.id); // Account_ID
+  const { email, newPassword, currentPassword, userName } = req.body;
 
   try {
-    if (!await checkPassword(id, currentPassword)) {
+    // 1. Kiểm tra mật khẩu hiện tại đúng không
+    const isPasswordValid = await checkPassword(id, currentPassword);
+    if (!isPasswordValid) {
       return res.status(401).json({ message: "Mật khẩu hiện tại không chính xác" });
     }
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-    await db.query(
-      `UPDATE "public"."ACCOUNT" SET email = $1, password = $2 WHERE "Account_ID" = $3`,
-      [email, hashedNewPassword, id]
-    );
-    res.json({ message: "Cập nhật tài khoản thành công" });
 
+    // 2. Hash mật khẩu mới (nếu có)
+    let hashedNewPassword = null;
+    if (newPassword && newPassword.trim() !== "") {
+      hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    }
+
+    // 3. Cập nhật bảng ACCOUNT: email và password nếu có mật khẩu mới
+    if (hashedNewPassword) {
+      await db.query(
+        `UPDATE public."ACCOUNT" SET "Email" = $1, "HashPassword" = $2 WHERE "Account_ID" = $3`,
+        [email, hashedNewPassword, id]
+      );
+    } else {
+      await db.query(
+        `UPDATE public."ACCOUNT" SET "Email" = $1 WHERE "Account_ID" = $2`,
+        [email, id]
+      );
+    }
+
+    // 4. Cập nhật tên người dùng trong bảng USERS theo Account_ID
+    if (userName && userName.trim() !== "") {
+      await db.query(
+        `UPDATE public."USERS" SET "Name_User" = $1 WHERE "Account_ID" = $2`,
+        [userName, id]
+      );
+    }
+
+    res.json({ message: "Cập nhật tài khoản thành công" });
   } catch (err) {
+    console.error("Update error:", err);
     console.error('Query error', err);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 
 

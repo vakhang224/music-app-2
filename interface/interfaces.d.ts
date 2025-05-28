@@ -18,6 +18,16 @@ export interface ExternalUrl {
     images?:Image[]
   }
   
+
+  export interface UserData {
+    User_ID: number;
+    Account_ID: number;
+    Name_User: string;
+    Country: string;
+    Email: string;
+    
+  }
+  
  export interface Album {
     id: string;
     name: string;

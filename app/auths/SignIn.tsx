@@ -47,7 +47,9 @@ const SignIn = () => {
           token: data.accessToken,
           refreshToken: data.refreshToken,
           expireDate: data.expireDate,
+          userData: data.userData,
         });
+        console.log("Login successful", data);
         router.replace("/(tabs)/home");
       } else {
         const errorData = await response.json();

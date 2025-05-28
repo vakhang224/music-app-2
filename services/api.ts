@@ -1,11 +1,8 @@
 import { LibraryArtist } from "@/interface/databaseModel";
 import { AlbumTracks, Track } from "@/interface/interfaces";
+  const API_BASE_URL = process.env.EXPO_PUBLIC_URL_TOKEN
+  console.log(API_BASE_URL)
 
-
-
-const API_BASE_URL = "http://192.168.160.214:8888"
-
-// Rest of your code remains the same
 interface TokenResponse {
   accessToken?: string;
   error?: string;
@@ -417,4 +414,3 @@ export const fetchAlbumTracks = async ({ query }: { query: string }) => {
     }
     
   };
-

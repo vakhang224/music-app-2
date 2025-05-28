@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import { Link } from 'expo-router'
 import { Album } from '@/interface/interfaces'
 import { ThemeContext } from '@/theme/ThemeContext'; // Import ThemeContext
+
 const AlbumCard = ({ id, name, images, artists }: Album) => {
   const { card, text } = useContext(ThemeContext); // Use the card color from ThemeContext
   return (
