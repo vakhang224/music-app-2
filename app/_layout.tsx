@@ -7,7 +7,6 @@ import { View } from "react-native";
 import { PortalProvider } from "@gorhom/portal";
 import MiniPlayer from "@/components/MiniPlayer";
 import { useEffect } from "react";
-import { URL_API } from "@env";
 export default function RootLayout() {
 
   return (

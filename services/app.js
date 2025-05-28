@@ -3,8 +3,8 @@ var request = require('request');
 var querystring = require('querystring');
 var cors = require('cors');
 
-var client_id = '0a821d9156594cf1a836be5326ce7fb7';
-var client_secret = '72bd2a8f33e54486b27c977f236c2226';
+const client_id = 'b42cc2747e39432084ae1aee8268d3e9';
+const client_secret = '65236f599c06485185deb28fe3c58c2c';
 var redirect_uri = 'http://127.0.0.1:8888/callback';
 
 var app = express();
