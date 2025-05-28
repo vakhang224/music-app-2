@@ -10,16 +10,11 @@ import { View } from "react-native";
 import { PortalProvider } from "@gorhom/portal";
 import MiniPlayer from "@/components/MiniPlayer";
 import { useEffect } from "react";
-export default function RootLayout() {
-
-// ✅ Component con nằm bên trong ThemeProvider => dùng context an toàn
+//  Component con nằm bên trong ThemeProvider => dùng context an toàn
 const AppLayout = () => {
   const theme = useContext(ThemeContext);
 
-
-  
   return (
-    
     <Stack
       screenOptions={{
         contentStyle: { backgroundColor: theme.background }, // Sử dụng theme ở đây
@@ -38,7 +33,15 @@ export default function RootLayout() {
   return (
     <ProfileProvider>
       <ThemeProvider>
-        <AppLayout />
+       
+        <GestureHandlerRootView className="relative">
+          <PortalProvider>
+            <AuthProvider>
+               <AppLayout />
+              <MiniPlayer />
+            </AuthProvider>
+          </PortalProvider>
+        </GestureHandlerRootView>
       </ThemeProvider>
     </ProfileProvider>
   );
