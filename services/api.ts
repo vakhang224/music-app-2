@@ -3,7 +3,7 @@ import { AlbumTracks, Track } from "@/interface/interfaces";
 
 
 
-const API_BASE_URL = "http://192.168.1.7:8888"
+const API_BASE_URL = "http://192.168.160.214:8888"
 
 // Rest of your code remains the same
 interface TokenResponse {

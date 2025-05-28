@@ -99,7 +99,7 @@ const SignUp = () => {
           SIGN UP
         </Text>
         <Image
-          source={require("D:\\AppReactNative\\music-app-2\\app\\assets\\images\\bg_bocchi.png")}
+          source={require("../assets/images/bocchi.jpg")}
           className="rounded-full bg-white w-20 h-20"
         />
       </View>

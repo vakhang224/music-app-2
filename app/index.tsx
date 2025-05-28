@@ -13,7 +13,7 @@ export default function Index() {
   return (
       <SafeAreaView style={{ flex: 1 }}>
         <ImageBackground
-          source={require('D:\\AppReactNative\\music-app-2\\app\\assets\\images\\bocchi.jpg')}
+          source={require('../assets/images/bocchi.jpg')}
           className="flex-1 justify-end items-center"
         >
           <View className="w-full flex items-center m-2">
