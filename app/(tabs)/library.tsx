@@ -28,6 +28,9 @@ import BottomSheetSort, {
 
 import { typeSort } from "@/interface/databaseModel";
 import { typeNumberColumn } from "@/interface/databaseModel";
+import { ThemeContext } from '@/theme/ThemeContext';
+import { useContext } from "react";
+
 export default function library() {
   const URL_API = process.env.EXPO_PUBLIC_URL_API
   console.log(URL_API)
@@ -48,6 +51,7 @@ export default function library() {
     typeNumberColumn.defaultColumn
   );
   const [selectN, setSelectN] = useState("");
+   const { isDarkMode, toggleDarkMode, background, text, primary,card } = useContext(ThemeContext);
 
 const fetchLibrary = async () => {
   try {
@@ -228,14 +232,15 @@ const fetchLibrary = async () => {
           source={require("@/assets/images/bg_bocchi.png")}
           className={`rounded-full ${
             numberColumn === typeNumberColumn.defaultColumn
-              ? "w-16 h-16 bg-white"
-              : "bg-white"
+              ? "w-16 h-16 "
+              : ""
           }`}
-          style={
-            numberColumn === typeNumberColumn.ThreeColumn
+          style={{
+            backgroundColor: card,
+            ...(numberColumn === typeNumberColumn.ThreeColumn
               ? { width: 100, height: 100 }
-              : {}
-          }
+              : {})
+          }}
         />
       </View>
       <View
@@ -245,194 +250,201 @@ const fetchLibrary = async () => {
             : "justify-center items-center"
         }
       >
-        <Text className="text-white font-bold">{playlist.Name_Playlist}</Text>
-        <Text className="text-white text-sm">Danh sách phát</Text>
+        <Text style={{ color: text }} className="font-bold">{playlist.Name_Playlist}</Text>
+        <Text style={{ color: text }} className="text-white text-sm">Danh sách phát</Text>
       </View>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView >
-      <View className="w-full flex flex-col bg-gray-900 gap-3 p-4">
-        <View className="flex flex-row justify-between">
-          <Text className="text-white text-3xl font-bold">Thư viện</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: background }}>
+<View className="w-full flex flex-col gap-3 p-4">
+  <View className="flex flex-row justify-between">
+    <Text style={{ color: text }} className=" text-3xl font-bold">Thư viện</Text>
 
-          <View className="flex flex-row gap-6">
-            <TouchableOpacity
-              onPress={() => {
-                console.log("Search");
-              }}
-            >
-              <Fontisto name="search" size={24} color="white" />
-            </TouchableOpacity>
+    <View className="flex flex-row gap-6">
+      <TouchableOpacity
+        onPress={() => {
+          console.log("Search");
+        }}
+      >
+        <Fontisto name="search" size={24} color={text}/>
+      </TouchableOpacity>
 
-            <TouchableOpacity
+      <TouchableOpacity
+        onPress={() => {
+          router.push("../addPlayListToLibrary");
+        }}
+      >
+        <FontAwesome6 name="add" size={24} color={text} />
+      </TouchableOpacity>
+    </View>
+  </View>
+
+  <View className="tag flex flex-row gap-2">
+    <TouchableOpacity
+      onPress={() => {
+        if (selectN !== "playlist") {
+          setCurrentData(playlistData);
+        }
+        setSortCurrent(typeSort.default);
+        handleSelectFilter("playlist");
+      }}
+      style={{
+        padding: 12,
+        borderRadius: 999,
+        backgroundColor: selectN === "playlist" ? primary : card,
+      }}
+    >
+      <Text
+        style={{
+          fontWeight: "bold",
+          color: selectN === "playlist" ? primary : text, 
+        }}
+      >
+        Danh sách phát
+      </Text>
+    </TouchableOpacity>
+
+    <TouchableOpacity
+      onPress={() => {
+        if (selectN !== "artist") {
+          setCurrentData(artistData);
+        }
+        setSortCurrent(typeSort.default);
+        handleSelectFilter("artist");
+      }}
+      style={{
+        padding: 12,
+        borderRadius: 999,
+        backgroundColor: selectN === "artist" ? primary : card,
+      }}
+    >
+      <Text
+        style={{
+          fontWeight: "bold",
+          color: selectN === "artist" ? primary : text,
+        }}
+      >
+        Tác giả
+      </Text>
+    </TouchableOpacity>
+  </View>
+
+  <View className="flex flex-row justify-between items-center p-3 rounded-2xl">
+    <TouchableOpacity
+      onPress={() => {
+        bottomSheetSortRef.current?.open();
+      }}
+      className="flex flex-row gap-3 items-center"
+    >
+      <FontAwesome name="sort" size={24} style={{ color: text }}/>
+      <Text style={{ color: text }}>
+        {typeSort.default === sortCurrent
+          ? "Sắp xếp"
+          : typeSort.alphaSort === sortCurrent
+          ? "Sắp xếp theo chữ cái"
+          : "Gần đây"}
+      </Text>
+    </TouchableOpacity>
+
+    <TouchableOpacity
+      onPress={() => {
+        setNumberColumn(
+          numberColumn === typeNumberColumn.defaultColumn
+            ? typeNumberColumn.ThreeColumn
+            : typeNumberColumn.defaultColumn
+        );
+      }}
+      className="flex flex-row gap-3 items-center"
+    >
+      <AntDesign name="appstore-o" size={24} color={text} />
+    </TouchableOpacity>
+  </View>
+
+  <View className="flex flex-col gap-1 w-full h-full">
+    <FlatList
+      contentContainerStyle={{ paddingBottom: 700 }}
+      data={currentData}
+      numColumns={numberColumn + 1}
+      key={numberColumn + 1}
+      keyExtractor={(item) => {
+        if (
+          item.category === "artist" &&
+          "Library_Artist_ID" in item &&
+          item.Library_Artist_ID
+        ) {
+          return item.Library_Artist_ID.toString();
+        }
+        if (
+          item.category === "playlist" &&
+          "Playlist_ID" in item &&
+          item.Playlist_ID
+        ) {
+          return item.Playlist_ID.toString();
+        }
+        return Math.random().toString();
+      }}
+      renderItem={({ item }) => {
+        if (item.category === "artist") {
+          const artist = item as Artist;
+
+          return (
+            <ArtistItem
+              artist={artist}
               onPress={() => {
-                router.push("../addPlayListToLibrary");
+                setSelectedArtist(artist);
+                bottomSheetArtistRef.current?.open();
               }}
-            >
-              <FontAwesome6 name="add" size={24} color="white" />
-            </TouchableOpacity>
+            />
+          );
+        } else if (item.category === "playlist") {
+          const playlist = item as Playlist;
+          return (
+            <PlaylistItem
+              playlist={playlist}
+              onPress={() => router.push(`/playlists/${playlist.Playlist_ID}`)}
+              onLongPress={() => handlePlaylist(playlist.Playlist_ID)}
+            />
+          );
+        }
+        return null;
+      }}
+      className="w-full"
+      ListFooterComponent={() => (
+        <TouchableOpacity
+          onPress={() => router.push("/addArtistToLibrary")}
+          className={`mb-4 ${
+            numberColumn === typeNumberColumn.defaultColumn
+              ? "flex-row w-full gap-3"
+              : "flex-col w-1/3 justify-center items-center"
+          }`}
+        >
+          <View
+            className="rounded-full justify-center items-center"
+            style={{
+              backgroundColor: card,
+              ...(numberColumn === typeNumberColumn.defaultColumn
+                ? { width: 64, height: 64 }
+                : { width: 100, height: 100 }),
+            }}
+          >
+            <FontAwesome6 name="add" size={30} color={text}  />
           </View>
-        </View>
-
-        <View className="tag flex flex-row gap-2">
-          <TouchableOpacity
-            onPress={() => {
-              if (selectN !== "playlist") {
-                setCurrentData(playlistData);
-              }
-              setSortCurrent(typeSort.default);
-              handleSelectFilter("playlist");
-            }}
-            className={`p-3 rounded-full ${
-              selectN === "playlist" ? "bg-black" : "bg-white"
-            }`}
+          <View
+            className={
+              numberColumn === typeNumberColumn.defaultColumn
+                ? "flex h-14 justify-center"
+                : "justify-center items-center"
+            }
           >
-            <Text
-              className={`font-bold ${
-                selectN === "playlist" ? "text-white" : "text-black"
-              }`}
-            >
-              Danh sách phát
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              if (selectN !== "artist") {
-                setCurrentData(artistData);
-              }
-
-              setSortCurrent(typeSort.default);
-              handleSelectFilter("artist");
-            }}
-            className={`p-3 rounded-full ${
-              selectN === "artist" ? "bg-black" : "bg-white"
-            }`}
-          >
-            <Text
-              className={`font-bold ${
-                selectN === "artist" ? "text-white" : "text-black"
-              }`}
-            >
-              Tác giả
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View className="flex flex-row justify-between items-center p-3 rounded-2xl">
-          <TouchableOpacity
-            onPress={() => {
-              bottomSheetSortRef.current?.open();
-            }}
-            className="flex flex-row gap-3 items-center"
-          >
-            <FontAwesome name="sort" size={24} color="white" />
-            <Text className="text-white">
-              {typeSort.default === sortCurrent
-                ? "Sắp xếp"
-                : typeSort.alphaSort === sortCurrent
-                ? "Sắp xếp theo chữ cái"
-                : "Gần đây"}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              setNumberColumn(
-                numberColumn === typeNumberColumn.defaultColumn
-                  ? typeNumberColumn.ThreeColumn
-                  : typeNumberColumn.defaultColumn
-              );
-            }}
-            className="flex flex-row gap-3 items-center"
-          >
-            <AntDesign name="appstore-o" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        <View className="flex flex-col gap-1 w-full h-full">
-          <FlatList
-            contentContainerStyle={{ paddingBottom: 700 }}
-            data={currentData}
-            numColumns={numberColumn + 1}
-            key={numberColumn + 1}
-            keyExtractor={(item) => {
-              if (
-                item.category === "artist" &&
-                "Library_Artist_ID" in item &&
-                item.Library_Artist_ID
-              ) {
-                return item.Library_Artist_ID.toString();
-              }
-              if (
-                item.category === "playlist" &&
-                "Playlist_ID" in item &&
-                item.Playlist_ID
-              ) {
-                return item.Playlist_ID.toString();
-              }
-              return Math.random().toString();
-            }}
-            renderItem={({ item }) => {
-              if (item.category === "artist") {
-                const artist = item as Artist;
-
-                return (
-                  <ArtistItem
-                    artist={artist}
-                    onPress={() => {
-                      setSelectedArtist(artist);
-                      bottomSheetArtistRef.current?.open();
-                    }}
-                  />
-                );
-              } else if (item.category === "playlist") {
-                const playlist = item as Playlist;
-                return (
-                  <PlaylistItem
-                    playlist={playlist}
-                    onPress={() => router.push(`/playlists/${playlist.Playlist_ID}`)}
-                    onLongPress={() => handlePlaylist(playlist.Playlist_ID)}
-                  />
-                );
-              }
-              return null;
-            }}
-            className="w-full"
-            ListFooterComponent={() => (
-              <TouchableOpacity
-                onPress={() => router.push("/addArtistToLibrary")}
-                className={`mb-4 ${
-                  numberColumn === typeNumberColumn.defaultColumn
-                    ? "flex-row w-full gap-3"
-                    : "flex-col w-1/3 justify-center items-center"
-                }`}
-              >
-                <View
-                  className="rounded-full bg-white justify-center items-center"
-                  style={
-                    numberColumn === typeNumberColumn.defaultColumn
-                      ? { width: 64, height: 64 }
-                      : { width: 100, height: 100 }
-                  }
-                >
-                  <FontAwesome6 name="add" size={30} color="black" />
-                </View>
-                <View
-                  className={
-                    numberColumn === typeNumberColumn.defaultColumn
-                      ? "flex h-14 justify-center"
-                      : "justify-center items-center"
-                  }
-                >
-                  <Text className="text-white font-bold">Thêm nghệ sĩ</Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-      </View>
+            <Text style={{ color: text }} className="font-bold">Thêm nghệ sĩ</Text>
+          </View>
+        </TouchableOpacity>
+      )}
+    />
+  </View>
+</View>
       {playlistData.find((item) => item.Playlist_ID === playListID) && (
         <BottomSheetPlaylist
           ref={bottomSheetRef}

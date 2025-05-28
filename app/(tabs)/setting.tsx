@@ -20,10 +20,13 @@ const Setting = () => {
   const { card } = useContext(ThemeContext);
 
 
+
   useFocusEffect(
     useCallback(() => {
       console.log('Refreshed profile:', profile);
     }, [profile])
+
+
   );
 
   return (
@@ -66,6 +69,12 @@ const Setting = () => {
               paddingVertical: 8,
               paddingHorizontal: 20,
               borderRadius: 8,
+            }}
+            onPress={() => {
+
+
+              // Chuyển hướng về màn hình đăng nhập
+              router.replace('../auths/SignIn');
             }}
           >
             <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 16 }}>Đăng xuất</Text>

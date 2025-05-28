@@ -30,7 +30,7 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'black',
+                    backgroundColor: isDarkMode ? 'black' : '#E3E8EB', 
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -67,7 +67,7 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'black',
+                    backgroundColor: isDarkMode ? 'black' : '#E3E8EB', 
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -79,11 +79,7 @@ const TabsLayout = () => {
                                     size={20} 
                                     color={focused ? activeColor : inactiveColor}
                                     className="w-6 h-6 mb-1 mt-7" />
-                    {/* <Image
-                    source={require('..\\assets\\icons\\library.png')}
-                    tintColor={focused ? 'white' : 'gray'}
-                    className="w-6 h-6 mb-1 mt-7" //  w-6 h-6 is close to 24x24,  mb-1 for margin
-                    /> */}
+                
                     <Text
                             className="text-sm w-20 text-center"
                             style={{ color: focused ? activeColor : inactiveColor }}> 
@@ -103,7 +99,7 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'black',
+                    backgroundColor: isDarkMode ? 'black' : '#E3E8EB', 
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -115,11 +111,7 @@ const TabsLayout = () => {
                                     size={18} 
                                     color={focused ? activeColor  : inactiveColor}
                                     className="w-6 h-6 mb-1 mt-7" />
-                    {/* <Image
-                    source={require('..\\assets\\icons\\search.png')}
-                    tintColor={focused ? 'white' : 'gray'}
-                    className="w-6 h-6 mb-1 mt-7" //  w-6 h-6 is close to 24x24,  mb-1 for margin
-                    /> */}
+                   
                     <Text
                             className="text-sm w-20 text-center"
                             style={{ color: focused ? activeColor : inactiveColor }}> 
@@ -139,7 +131,7 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'black',
+                    backgroundColor: isDarkMode ? 'black' : '#E3E8EB', 
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,
@@ -152,11 +144,7 @@ const TabsLayout = () => {
                                 color={focused ? activeColor  : inactiveColor} 
                                 className="w-6 h-6 mb-1 mt-7"
                                 />
-                    {/* <Image
-                    source={require('..\\assets\\icons\\options.png')}
-                    tintColor={focused ? 'white' : 'gray'}
-                    className="w-6 h-6 mb-1 mt-7" //  w-6 h-6 is close to 24x24,  mb-1 for margin
-                    /> */}
+                    
                     <Text
                             className="text-sm w-20 text-center"
                             style={{ color: focused ? activeColor : inactiveColor }}> 
@@ -177,7 +165,7 @@ const TabsLayout = () => {
                     height: 60,
                     marginTop: -100,
                     marginBottom: 0,
-                    backgroundColor: 'black',
+                    backgroundColor: isDarkMode ? 'black' : '#E3E8EB', 
                     borderTopWidth: 0,
                     borderBottomWidth: 0,
                     shadowOpacity: 0,

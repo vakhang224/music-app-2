@@ -33,7 +33,6 @@ export default function RootLayout() {
   return (
     <ProfileProvider>
       <ThemeProvider>
-       
         <GestureHandlerRootView className="relative">
           <PortalProvider>
             <AuthProvider>
