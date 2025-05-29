@@ -47,7 +47,9 @@ const SignIn = () => {
           token: data.accessToken,
           refreshToken: data.refreshToken,
           expireDate: data.expireDate,
+          userData: data.userData,
         });
+        console.log("Login successful", data);
         router.replace("/(tabs)/home");
       } else {
         const errorData = await response.json();
@@ -91,7 +93,7 @@ const SignIn = () => {
           SIGN IN
         </Text>
         <Image
-          source={require("F:\\Code\\React\\music-app-2\\music-app-2\\assets\\images\\bg_bocchi.png")}
+          source={require("../assets/images/bocchi.jpg")}
           className="rounded-full bg-white w-20 h-20"
         />
       </View>

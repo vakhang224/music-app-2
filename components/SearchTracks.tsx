@@ -1,34 +1,35 @@
-import { View, Text, TouchableOpacity } from 'react-native';
-import React from 'react';
-import { Track } from '@/interface/interfaces';
+import { View, Text, Image } from 'react-native'
+import { TouchableOpacity } from 'react-native'
+import { Track } from '@/interface/interfaces'
+import { ThemeContext } from '@/theme/ThemeContext';
+import React, { useContext } from 'react'
 import { usePlayerStore } from '@/store/usePlayerStore';
 
-const SearchTracks = ({ id, name, artists, duration_ms, album }: Track) => {
-  const { play } = usePlayerStore(); // Thêm hook store
+const SearchTracks = ({ name, artists, duration_ms, album }: Track) => {
+  const { card, text, subtitle } = useContext(ThemeContext);
 
+  // Format duration from milliseconds to mm:ss
   const formatDuration = (ms?: number) => {
-    if (!ms) return '0:00';
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
+    if (!ms) return '0:00'
+    const minutes = Math.floor(ms / 60000)
+    const seconds = Math.floor((ms % 60000) / 1000)
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+  }
 
   return (
-    <TouchableOpacity
-      onPress={() => play(id)}
-      className="px-5 py-3 mt-2 mx-5 bg-[#191919] rounded-md justify-between flex-row"
-    >
-      <View className="max-w-[90%]">
-        <Text className="text-white font-semibold text-base" numberOfLines={1}>{name}</Text>
-        <Text className="text-gray-400 text-sm" numberOfLines={1}>
+    <TouchableOpacity 
+      style={{ backgroundColor: card }}
+      className="px-5 py-3 mt-2 mx-5 rounded-md justify-between flex-row">
+      <View>
+        <Text style={{ color: text }} className=" font-semibold text-base">{name}</Text>
+        <Text style={{ color: subtitle }} className=" text-sm">
           {artists.map((a) => a.name).join(', ')} • {album.name}
         </Text>
       </View>
       <View>
-        <Text className="text-gray-500">{formatDuration(duration_ms)}</Text>
+        <Text className="text-gray-500 text-">{formatDuration(duration_ms)}</Text>
       </View>
     </TouchableOpacity>
   );
-};
-
-export default SearchTracks;
+}
+export default SearchTracks

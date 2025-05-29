@@ -95,7 +95,7 @@ async function handleDeletePlaylist(id: string) {
           <BottomSheetView className="flex flex-row items-center w-full gap-3 border-b border-gray-400" style={{paddingVertical:15}}>
             <View className='rounded-md bg-white h-16 w-16'>
             <Image
-             source={require('F:\\Code\\React\\music-app-2\\music-app-2\\assets\\images\\bg_bocchi.png')}
+             source={require('../assets/images/bg_bocchi.png')}
               className="w-full h-full"
             />
             </View>
